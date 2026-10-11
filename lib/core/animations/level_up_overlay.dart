@@ -140,9 +140,6 @@ class _LevelUpOverlayState extends ConsumerState<LevelUpOverlay>
     super.dispose();
   }
 
-  /// レベルが10の倍数かチェック
-  bool get _isMultipleOfTen => widget.newLevel % 10 == 0;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -158,8 +155,8 @@ class _LevelUpOverlayState extends ConsumerState<LevelUpOverlay>
         builder: (context, child) {
           final content = Stack(
             children: [
-              // コンフェッティアニメーション（10の倍数のみ）
-              if (_isMultipleOfTen) _buildConfetti(),
+              // コンフェッティアニメーション（レベルアップ時は常に表示）
+              _buildConfetti(),
 
               // レベルアップコンテンツ
               Center(
@@ -304,8 +301,8 @@ class _LevelUpOverlayState extends ConsumerState<LevelUpOverlay>
     return Positioned.fill(
       child: Center(
         child: SizedBox(
-          width: 400,
-          height: 400,
+          width: 600,
+          height: 600,
           child: Opacity(
             opacity: _fadeAnimation.value,
             child: Lottie.asset(

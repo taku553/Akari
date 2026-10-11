@@ -23,13 +23,13 @@
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="mission_leveler">
+  <meta name="apple-mobile-web-app-title" content="Akari">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>mission_leveler</title>
+  <title>Akari</title>
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -42,6 +42,11 @@
       justify-content: center;
       background: #ffffff;
       z-index: 9999;
+      flex-direction: column; 
+      gap: 32px;
+    }
+    #app-loading img { 
+      width: 160px; 
     }
     #app-loading .spinner {
       width: 40px;
@@ -57,7 +62,10 @@
   </style>
 </head>
 <body>
-  <div id="app-loading"><div class="spinner"></div></div>
+  <div id="app-loading">
+    <img src="akari_logo.svg" alt="Akari">
+    <div class="spinner"></div>
+  </div>
   <script>
     // Flutterエンジンが最初のフレームを描画したタイミングでプレースホルダーを消す
     window.addEventListener('flutter-first-frame', function () {

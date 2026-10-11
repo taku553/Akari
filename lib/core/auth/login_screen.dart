@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'auth_service.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -98,24 +99,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // アプリアイコン/タイトル
-                  const Icon(
-                    Icons.rocket_launch_rounded,
-                    size: 64,
-                    color: Color(0xFFF87171),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Mission Leveler',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2D3748),
-                      letterSpacing: 1.2,
+                  // ロゴ（文字入り）
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/images/akari_logo_full.svg',
+                      width: 160,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   Text(
                     _isLogin ? 'ログイン' : '新規登録',
                     textAlign: TextAlign.center,

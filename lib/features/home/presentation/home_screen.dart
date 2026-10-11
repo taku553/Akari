@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../mission/providers/mission_provider.dart';
@@ -46,6 +47,17 @@ class HomeScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          // ロゴ（左上、履歴ボタンの上）
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 18, bottom: 8),
+                              child: SvgPicture.asset(
+                                'assets/images/akari_mark.svg',
+                                height: 36,
+                              ),
+                            ),
+                          ),
                           // ─── トップバー行: 履歴 ／ MISSION+名前 ／ 右スペーサー ───
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),

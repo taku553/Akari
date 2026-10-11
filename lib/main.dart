@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -152,6 +153,8 @@ class _LoadingWithReloadState extends State<_LoadingWithReload> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            SvgPicture.asset('assets/images/akari_mark.svg', width: 96),
+            const SizedBox(height: 32),
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(widget.message),
