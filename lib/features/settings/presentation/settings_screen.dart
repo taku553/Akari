@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/auth/auth_service.dart';
+import '../../../core/auth/guest_mode_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 
@@ -30,6 +31,8 @@ class SettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // ゲストモード中の場合は登録を促すバナーを表示
+            _buildGuestModeBanner(context, ref),
             // アカウントプロフィール欄
             _buildAccountBanner(context, ref),
             const SizedBox(height: 24),
@@ -114,65 +117,154 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 24),
-            _buildSettingsSection(
-              title: 'アカウント',
-              items: [
-                _SettingsItem(
-                  icon: Icons.lock_outline,
-                  title: 'パスワード変更',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
-                  onTap: () => context.push('/settings/change-password'),
-                ),
-                _SettingsItem(
-                  icon: Icons.logout,
-                  title: 'ログアウト',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
-                  onTap: () async {
-                    final confirmed = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('ログアウト'),
-                        content: const Text('ログアウトしますか？'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: const Text('キャンセル'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: const Text(
-                              'ログアウト',
-                              style: TextStyle(color: Color(0xFFDC2626)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (confirmed == true) {
-                      await ref.read(authServiceProvider).signOut();
-                    }
-                  },
-                ),
-                _SettingsItem(
-                  icon: Icons.delete_forever,
-                  title: 'アカウント削除',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
-                  onTap: () => context.push('/settings/delete-account'),
-                ),
-              ],
-            ),
+            _buildAccountSection(context, ref),
           ],
         ),
       ),
+    );
+  }
+
+  /// ゲストモード中はアカウントセクションを非表示にする
+  Widget _buildAccountSection(BuildContext context, WidgetRef ref) {
+    final isGuest = ref.watch(isGuestModeProvider);
+    // ゲストモード中はアカウント操作項目を表示しない（バナーで代替）
+    if (isGuest) return const SizedBox.shrink();
+
+    return _buildSettingsSection(
+      title: 'アカウント',
+      items: [
+        _SettingsItem(
+          icon: Icons.lock_outline,
+          title: 'パスワード変更',
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: Color(0xFFA0AEC0),
+          ),
+          onTap: () => context.push('/settings/change-password'),
+        ),
+        _SettingsItem(
+          icon: Icons.logout,
+          title: 'ログアウト',
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: Color(0xFFA0AEC0),
+          ),
+          onTap: () async {
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('ログアウト'),
+                content: const Text('ログアウトしますか？'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('キャンセル'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text(
+                      'ログアウト',
+                      style: TextStyle(color: Color(0xFFDC2626)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+            if (confirmed == true) {
+              await ref.read(authServiceProvider).signOut();
+            }
+          },
+        ),
+        _SettingsItem(
+          icon: Icons.delete_forever,
+          title: 'アカウント削除',
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: Color(0xFFA0AEC0),
+          ),
+          onTap: () => context.push('/settings/delete-account'),
+        ),
+      ],
+    );
+  }
+
+  /// ゲストモード中のみ表示するバナー
+  Widget _buildGuestModeBanner(BuildContext context, WidgetRef ref) {
+    final isGuest = ref.watch(isGuestModeProvider);
+    if (!isGuest) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFEF3C7),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFF59E0B)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '⚠️ ゲストモードで使用中',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF92400E),
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'データはこのデバイスにのみ保存されています。'
+                'アカウントを作成するとクラウドに保存され、複数デバイスでデータを共有できます。',
+                style: TextStyle(fontSize: 13, color: Color(0xFF78350F)),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    // 新規登録フォームで開く・ゲスト経由フラグをセット
+                    ref.read(isFromGuestModeProvider.notifier).state = true;
+                    ref.read(guestExitToLoginProvider.notifier).state = false;
+                    ref.read(isGuestModeProvider.notifier).state = false;
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFF59E0B),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('アカウントを作成してデータを保存する'),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () {
+                    // ログインフォームで開く・ゲスト経由フラグをセット
+                    ref.read(isFromGuestModeProvider.notifier).state = true;
+                    ref.read(guestExitToLoginProvider.notifier).state = true;
+                    ref.read(isGuestModeProvider.notifier).state = false;
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFFF59E0B)),
+                    foregroundColor: const Color(0xFF92400E),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('アカウント作成済みの方はこちらからログイン'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 

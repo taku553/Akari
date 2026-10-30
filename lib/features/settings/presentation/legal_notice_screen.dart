@@ -3,7 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 
 /// 特定商取引法に関する表記の各項目
-/// TODO: 下記の value を実際の情報に書き換えてください
+/// TODO: 下記のvalueを実際の情報に書き換えてください
 class _LegalNoticeItem {
   final String label;
   final String value;

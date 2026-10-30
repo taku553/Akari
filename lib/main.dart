@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/auth/auth_service.dart';
+import 'core/auth/guest_mode_provider.dart';
 import 'core/auth/login_screen.dart';
 import 'core/utils/app_reload.dart';
 
@@ -194,17 +195,97 @@ class MissionLevelerApp extends ConsumerWidget {
       ),
       home: authState.when(
         data: (user) {
-          if (user == null) {
-            // 未ログイン → ログイン画面
-            return const LoginScreen();
+          if (user != null) {
+            // ログイン済み → メインアプリ（UID付きでRepository初期化）
+            return _AuthenticatedApp(uid: user.uid);
           }
-          // ログイン済み → メインアプリ（UID付きでRepository初期化）
-          return _AuthenticatedApp(uid: user.uid);
+          // ゲストモードが有効 → ゲストアプリ（Hiveのみ）
+          final isGuest = ref.watch(isGuestModeProvider);
+          if (isGuest) {
+            return const _GuestApp();
+          }
+          // 未ログイン → ログイン画面
+          // guestExitToLoginProvider が true なら最初からログインフォームを表示
+          final openLogin = ref.watch(guestExitToLoginProvider);
+          final fromGuest = ref.watch(isFromGuestModeProvider);
+          return LoginScreen(initialIsLogin: openLogin, fromGuestMode: fromGuest);
         },
         loading: () =>
             _LoadingWithReload(message: '認証状態を確認しています...', onRetry: () {}),
         error: (_, _) => const LoginScreen(),
       ),
+    );
+  }
+}
+
+/// ゲストモード用のメインアプリ
+/// uid = null → Hive のみで動作（Firebase へは一切書き込まない）
+class _GuestApp extends ConsumerStatefulWidget {
+  const _GuestApp();
+
+  @override
+  ConsumerState<_GuestApp> createState() => _GuestAppState();
+}
+
+class _GuestAppState extends ConsumerState<_GuestApp> {
+  late final GoRouter _router;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRepositories();
+  }
+
+  Future<void> _initRepositories() async {
+    debugPrint('🚀 GuestApp: Initializing repositories (Hive-only, no uid)');
+
+    // uid = null → Firestore へのアクセスは自動的にスキップされる
+    final missionRepo = MissionRepository(uid: null);
+    final userStatsRepo = UserStatsRepository(uid: null);
+
+    await missionRepo.init();
+    await userStatsRepo.init();
+    await ref.read(userSettingsNotifierProvider.future);
+
+    debugPrint('🚀 GuestApp: Repositories initialized successfully');
+
+    if (mounted) {
+      ref.read(missionRepositoryProvider.notifier).state = missionRepo;
+      ref.read(userStatsRepositoryProvider.notifier).state = userStatsRepo;
+      ref.invalidate(userStatsProvider);
+      _router = ref.read(appRouterProvider);
+      setState(() {
+        _initialized = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_initialized) {
+      return _LoadingWithReload(
+        message: 'データを読み込んでいます...',
+        onRetry: () {
+          setState(() {
+            _initRepositories();
+          });
+        },
+      );
+    }
+
+    return MaterialApp.router(
+      title: 'Mission Leveler',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFF87171),
+          primary: const Color(0xFFF87171),
+        ),
+        useMaterial3: true,
+        fontFamily: 'NotoSansJP',
+      ),
+      routerConfig: _router,
     );
   }
 }

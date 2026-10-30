@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'auth_service.dart';
+import 'guest_mode_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  /// true（デフォルト）: ログインフォーム表示、false: 新規登録フォーム表示
+  final bool initialIsLogin;
+  /// ゲストモードの設定画面から遷移してきた場合 true。戻るボタンを表示する。
+  final bool fromGuestMode;
+  const LoginScreen({super.key, this.initialIsLogin = true, this.fromGuestMode = false});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -20,6 +25,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLogin = widget.initialIsLogin;
+  }
 
   @override
   void dispose() {
@@ -88,6 +99,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
+      // ゲストモードから来た場合のみ戻るボタンを表示
+      appBar: widget.fromGuestMode
+          ? AppBar(
+              backgroundColor: const Color(0xFFF7F8FA),
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new,
+                    color: Color(0xFF4A5568)),
+                tooltip: 'ゲストモードに戻る',
+                onPressed: () {
+                  // ゲストモードへ戻る・フラグをリセット
+                  ref.read(isFromGuestModeProvider.notifier).state = false;
+                  ref.read(guestExitToLoginProvider.notifier).state = false;
+                  ref.read(isGuestModeProvider.notifier).state = true;
+                },
+              ),
+            )
+          : null,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -247,6 +276,69 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       style: const TextStyle(
                         color: Color(0xFF718096),
                         fontSize: 13,
+                      ),
+                    ),
+                  ),
+
+                  // ─── ゲストモード ───────────────────────────
+                  const SizedBox(height: 16),
+                  Row(
+                    children: const [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'または',
+                          style: TextStyle(
+                            color: Color(0xFFA0AEC0),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // データ保存の注意書き
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFED7AA)),
+                    ),
+                    child: const Text(
+                      '⚠️ ゲストモードのデータはこのデバイスにのみ保存されます。'
+                      'アカウントを作成するとクラウドに保存でき、複数デバイスでデータを引き継げます。',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF92400E)),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // ゲストモードボタン
+                  SizedBox(
+                    height: 48,
+                    child: OutlinedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              ref
+                                  .read(isGuestModeProvider.notifier)
+                                  .state = true;
+                            },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFCBD5E0)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'まずは試してみる（ログイン不要）',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF4A5568),
+                        ),
                       ),
                     ),
                   ),
