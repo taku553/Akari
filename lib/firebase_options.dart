@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAEo-JJHDFAb2uacOOMr7Q1zRpDb62PMb4',
-    appId: '1:145475121986:android:b35a4eda8b7bdc741acedb',
+    appId: '1:145475121986:android:d53f56f4d74986541acedb',
     messagingSenderId: '145475121986',
     projectId: 'mylevelapp-71eac',
     storageBucket: 'mylevelapp-71eac.firebasestorage.app',
@@ -78,11 +78,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyAfG7Gmz2Yb_oEb2blN7H5yKk_sJLvo7-Y',
-    appId: '1:145475121986:web:7a3c8147540bb36b1acedb',
+    appId: '1:145475121986:web:8ff7cbdcce3a2a7e1acedb',
     messagingSenderId: '145475121986',
     projectId: 'mylevelapp-71eac',
     authDomain: 'mylevelapp-71eac.firebaseapp.com',
     storageBucket: 'mylevelapp-71eac.firebasestorage.app',
-    measurementId: 'G-VMXHRMM850',
+    measurementId: 'G-GX0Z6Z7F5F',
   );
+
 }
