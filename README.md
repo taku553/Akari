@@ -32,8 +32,8 @@ Firebase Auth + Firestore によるクロスプラットフォームのリアル
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/<your-username>/mylevelapp.git
-cd mylevelapp
+git clone https://github.com/<your-username>/akari.git
+cd akari
 ```
 
 ### 2. Firebase プロジェクトの設定
@@ -136,6 +136,6 @@ windows/               # Windows プラットフォーム設定
 
 要件定義＆モックアップ/
 ├── requirements.md            # 要件定義書
-└── mission_leveler_v6.html    # HTMLモックアップ
+└── akari_v6.html    # HTMLモックアップ
 ```
 

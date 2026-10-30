@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// アプリ全体で使用するカラーパレット
-/// HTMLモックアップ (mission_leveler_v6.html) に基づく
+/// HTMLモックアップ (akari_v6.html) に基づく
 class AppColors {
   AppColors._();
 

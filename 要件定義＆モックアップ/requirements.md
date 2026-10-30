@@ -349,8 +349,8 @@ lib/
 flutter doctor
 
 # 新規プロジェクト作成
-flutter create mission_leveler
-cd mission_leveler
+flutter create akari
+cd akari
 
 # 必須パッケージの追加
 flutter pub add riverpod flutter_riverpod

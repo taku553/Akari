@@ -1,6 +1,6 @@
 {
-    "name": "mission_leveler",
-    "short_name": "mission_leveler",
+    "name": "akari",
+    "short_name": "akari",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
