@@ -72,7 +72,7 @@ flutter_native_splash:
   image: assets/images/splash_logo.png
   android_12:
     color: "#FFFFFF"
-    image: assets/images/splash_logo.png
+    image: assets/images/splash_logo_android12.png
   web: false
 
 # For information on the generic Dart part of this file, see the
