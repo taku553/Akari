@@ -48,6 +48,11 @@ class LevelUpStateNotifier extends StateNotifier<LevelUpState> {
   LevelUpStateNotifier()
     : super(LevelUpState(isModalOpen: false, timestamp: DateTime.now()));
 
+  /// 状態を初期化する（データ削除後に旧レベル表示などが残らないようにする）
+  void reset() {
+    state = LevelUpState(isModalOpen: false, timestamp: DateTime.now());
+  }
+
   /// レベルアップモーダルを開く
   /// oldLevel: モーダル表示中に表示し続ける旧レベル
   /// newLevel: モーダル終了後に表示する新レベル
@@ -94,7 +99,16 @@ class LevelUpStateNotifier extends StateNotifier<LevelUpState> {
       '🎯 LevelUpState: clearClosedFlag called - modalJustClosed was: ${state.modalJustClosed}',
     );
     if (state.modalJustClosed) {
-      state = state.copyWith(modalJustClosed: false, timestamp: DateTime.now());
+      // 演出終了後は displayLevel を解除し、常に実データのレベルを表示させる
+      state = LevelUpState(
+        isModalOpen: state.isModalOpen,
+        modalJustClosed: false,
+        completedLevel: state.completedLevel,
+        displayLevel: null,
+        pendingLevel: state.pendingLevel,
+        progressBeforeLevelUp: state.progressBeforeLevelUp,
+        timestamp: DateTime.now(),
+      );
       debugPrint(
         '🎯 LevelUpState: State after clearClosedFlag - modalJustClosed: ${state.modalJustClosed}',
       );

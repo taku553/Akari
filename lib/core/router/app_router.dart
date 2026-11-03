@@ -11,6 +11,7 @@ import '../../features/mission/presentation/missions_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/change_password_screen.dart';
 import '../../features/settings/presentation/delete_account_screen.dart';
+import '../../features/settings/presentation/delete_data_screen.dart';
 import '../../features/settings/presentation/default_exp_settings_screen.dart';
 import '../../features/settings/presentation/legal_notice_screen.dart';
 import '../../features/settings/presentation/terms_of_service_screen.dart';
@@ -101,6 +102,11 @@ final appRouterProvider = Provider((ref) {
         path: '/settings/delete-account',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const DeleteAccountScreen(),
+      ),
+      GoRoute(
+        path: '/settings/delete-data',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DeleteDataScreen(),
       ),
       GoRoute(
         path: '/settings/default-exp',

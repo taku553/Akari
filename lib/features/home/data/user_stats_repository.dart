@@ -114,9 +114,10 @@ class UserStatsRepository {
       final data = snapshot.data() as Map<String, dynamic>?;
       if (data == null) return;
 
-      // totalExp フィールドが既に存在し、0より大きい場合はスキップ（移行済み）
+      // totalExp フィールドが既に存在する場合はスキップ（移行済み）
+      // ※ データ削除機能で経験値のみ0に戻した場合に再集計されないよう、0も移行済みとして扱う
       final existingTotalExp = data['totalExp'] as int?;
-      if (existingTotalExp != null && existingTotalExp > 0) {
+      if (existingTotalExp != null) {
         debugPrint(
           '☁️ UserStatsRepository: totalExp already exists ($existingTotalExp), skipping migration',
         );
@@ -189,7 +190,8 @@ class UserStatsRepository {
   /// データが流れるたびにHiveキャッシュも更新する
   Stream<UserStats> get statsStream {
     if (_statsDoc == null) {
-      return Stream.value(_box?.get(_statsKey) ?? const UserStats());
+      // ゲスト（Hiveのみ）: 現在値を流した後、Hiveの変更を監視して流し続ける
+      return _watchLocalStats();
     }
     return _statsDoc!.snapshots().map((doc) {
       if (doc.exists) {
@@ -202,6 +204,13 @@ class UserStatsRepository {
       }
       return _box?.get(_statsKey) ?? const UserStats();
     });
+  }
+
+  Stream<UserStats> _watchLocalStats() async* {
+    yield _box?.get(_statsKey) ?? const UserStats();
+    final box = _box;
+    if (box == null) return;
+    yield* box.watch(key: _statsKey).map((_) => getStats());
   }
 
   // UserStats取得（Hiveキャッシュから）
@@ -222,6 +231,39 @@ class UserStatsRepository {
         '⚠️ UserStatsRepository: Failed to save to Firestore (offline?). error=$e',
       );
     }
+  }
+
+  /// 選択した項目だけ初期値に戻す（Hive + Firestore）
+  /// level: レベル / exp: 現在の経験値と累計経験値 / missionCount: 完了ミッション数
+  Future<void> resetStats({
+    required bool level,
+    required bool exp,
+    required bool missionCount,
+  }) async {
+    const defaults = UserStats();
+    var stats = getStats();
+    if (level) {
+      stats = stats.copyWith(
+        level: defaults.level,
+        nextLevelExp: defaults.nextLevelExp,
+        // 経験値を残す場合でもレベル1の上限を超えないようにする
+        currentExp: stats.currentExp >= defaults.nextLevelExp
+            ? defaults.nextLevelExp - 1
+            : stats.currentExp,
+      );
+    }
+    if (exp) {
+      stats = stats.copyWith(
+        currentExp: defaults.currentExp,
+        totalExp: defaults.totalExp,
+      );
+    }
+    if (missionCount) {
+      stats = stats.copyWith(
+        completedMissionCount: defaults.completedMissionCount,
+      );
+    }
+    await saveStats(stats);
   }
 
   // 経験値加算とレベルアップ処理

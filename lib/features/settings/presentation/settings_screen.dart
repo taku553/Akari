@@ -5,6 +5,7 @@ import '../../../core/auth/auth_service.dart';
 import '../../../core/auth/guest_mode_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
+import '../../home/providers/user_stats_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -66,9 +67,7 @@ class SettingsScreen extends ConsumerWidget {
                     Icons.chevron_right,
                     color: Color(0xFFA0AEC0),
                   ),
-                  onTap: () {
-                    // TODO: Show confirmation dialog
-                  },
+                  onTap: () => context.push('/settings/delete-data'),
                 ),
               ],
             ),
@@ -221,6 +220,24 @@ class SettingsScreen extends ConsumerWidget {
                 style: TextStyle(fontSize: 13, color: Color(0xFF78350F)),
               ),
               const SizedBox(height: 12),
+              Builder(
+                builder: (context) {
+                  final stats = ref.watch(userStatsProvider).value;
+                  if (stats == null) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Lv.${stats.level}　EXP ${stats.currentExp} / ${stats.nextLevelExp}'
+                      '　累計 ${stats.totalExp} EXP',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF92400E),
+                      ),
+                    ),
+                  );
+                },
+              ),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(

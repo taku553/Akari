@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/auth/auth_service.dart';
+import 'core/animations/level_up_state_provider.dart';
 import 'core/auth/guest_mode_provider.dart';
 import 'core/auth/login_screen.dart';
 import 'core/utils/app_reload.dart';
@@ -254,6 +255,7 @@ class _GuestAppState extends ConsumerState<_GuestApp> {
       ref.read(missionRepositoryProvider.notifier).state = missionRepo;
       ref.read(userStatsRepositoryProvider.notifier).state = userStatsRepo;
       ref.invalidate(userStatsProvider);
+      ref.invalidate(levelUpStateProvider);
       _router = ref.read(appRouterProvider);
       setState(() {
         _initialized = true;
@@ -352,6 +354,7 @@ class _AuthenticatedAppState extends ConsumerState<_AuthenticatedApp> {
       ref.read(userStatsRepositoryProvider.notifier).state = userStatsRepo;
       // ユーザー切替時に古いキャッシュが残らないよう、statsProviderを再作成
       ref.invalidate(userStatsProvider);
+      ref.invalidate(levelUpStateProvider);
       _router = ref.read(appRouterProvider);
       setState(() {
         _initialized = true;

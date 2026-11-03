@@ -125,7 +125,8 @@ class MissionRepository {
   /// データが流れるたびにHiveキャッシュも更新する
   Stream<List<Mission>> get allMissionsStream {
     if (_missionsCol == null) {
-      return Stream.value(_box?.values.toList() ?? []);
+      // ゲスト（Hiveのみ）: 現在値を流した後、Hiveの変更を監視して流し続ける
+      return _watchLocalMissions();
     }
     return _missionsCol!.snapshots().map((snapshot) {
       final missions = snapshot.docs
@@ -138,6 +139,13 @@ class MissionRepository {
       );
       return missions;
     });
+  }
+
+  Stream<List<Mission>> _watchLocalMissions() async* {
+    yield _box?.values.toList() ?? [];
+    final box = _box;
+    if (box == null) return;
+    yield* box.watch().map((_) => box.values.toList());
   }
 
   /// HiveキャッシュをFirestoreストリームのデータで更新する
@@ -269,6 +277,32 @@ class MissionRepository {
       debugPrint(
         '⚠️ MissionRepository: Failed to delete from Firestore (offline?). error=$e',
       );
+    }
+  }
+
+  // 全ミッション削除（Hive + Firestore）
+  Future<void> deleteAllMissions() async {
+    await _box?.clear();
+    final col = _missionsCol;
+    if (col == null) return;
+    try {
+      final snapshot = await col.get();
+      // WriteBatch は1回500件までのため分割して削除
+      for (var i = 0; i < snapshot.docs.length; i += 400) {
+        final batch = FirebaseFirestore.instance.batch();
+        for (final doc in snapshot.docs.skip(i).take(400)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      }
+      debugPrint(
+        '☁️ MissionRepository: Deleted ${snapshot.docs.length} missions from Firestore.',
+      );
+    } catch (e) {
+      debugPrint(
+        '⚠️ MissionRepository: Failed to delete all from Firestore. error=$e',
+      );
+      rethrow;
     }
   }
 
