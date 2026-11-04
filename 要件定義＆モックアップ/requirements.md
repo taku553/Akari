@@ -4,7 +4,7 @@
 
 ### プロジェクトの背景と目的
 
-誰しも自分の中で夢を叶えたり目標を達成したいと考えている。でも個人の意思だけでは自分を律することは難しい。夢や目標を達成するには毎日の小さな積み重ねが必要で、それを達成するには意思だけに頼らない目標達成の仕組みが重要。じゃあどんな仕組みなら作ればいいか。可能性があるのはレベルアップシステム。rpgをはじめとするゲームにはゲーム内キャラクターにレベルの概念を与えてそれぞれを強化していくという仕組みがある。これがあると、自分が所有しているキャラが今どのくらいの強さなのか、さらに強くなるためにどのくらいの経験値が必要なのか、あるキャラは他のキャラと比べてどの位置にいるか、これまでにどれだけこのキャラを使い込みとのみ試練を乗り越えてきたか。それらがレベルによって数値で見て取れることでキャラの存在を自分事として捉えつつ、今何が必要かを客観的な尺度で把握することができる。ゲームの世界で多用されているこのレベルの概念を現実の自分自身に対して使えば、自分を一人のゲームキャラに見立てレベルアップシステムを駆使しながら夢や目標を達成できると考えた。このレベルアップシステムを最も身近に感じれるように、ほとんどの人にとって今や必須のツールであるスマホの中にアプリとして提供する。
+誰しも自分の中で夢を叶えたり目標を達成したいと考えている。でも個人の意思だけでは自分を律することは難しい。夢や目標を達成するには毎日の小さな積み重ねが必要で、それを達成するには意思だけに頼らない目標達成の仕組みが重要。そのために作ったのがレベルアップアプリ：Akari。rpgをはじめとするゲームにはゲーム内キャラクターにレベルの概念を与えてそれぞれを強化していくという仕組みがある。これがあると、自分が所有しているキャラクターの成長具合をレベルや経験値などの指標で把握することができる。Akariではこのレベルアップシステムを自分自身に適用することで今の自分の成長具合を客観的な尺度で把握できる。これを駆使すれば自分を一人のゲームキャラに見立てながら夢や目標を達成できると考えた。このシステムをアプリとして提供し多くの人の自分磨きをサポートすることを目指す。
 
 ### 解決したい課題
 
@@ -133,104 +133,83 @@
 
 ## 技術アーキテクチャ
 
-### 現在のプロジェクト構造（2026年2月時点）
+### 現在のプロジェクト構造（2026年11月時点）
 
 **Feature-First + Layer分離アーキテクチャ**を採用
 
 ```
 lib/
-├── main.dart
+├── main.dart                         # Firebase/Hive初期化、認証状態に応じた起動
+├── firebase_options.dart             # FlutterFire生成のFirebase設定
 ├── core/
-│   ├── animations/              # アニメーション専用レイヤー
-│   │   ├── animation_coordinator.dart       # アニメーションキュー管理
-│   │   ├── animation_providers.dart         # アニメーション用Provider
-│   │   ├── animation_types.dart             # アニメーション型定義
-│   │   ├── level_up_overlay.dart            # レベルアップオーバーレイUI
-│   │   ├── level_up_state_provider.dart     # レベルアップ状態管理
-│   │   └── progress_animation_controller.dart # プログレスバーアニメーション
-│   ├── providers/               # 共通Provider（未実装）
-│   ├── router/                  # ルーティング
-│   │   └── app_router.dart              # go_routerによるルート定義
-│   ├── storage/                 # データ永続化（未実装）
-│   ├── theme/                   # デザインシステム
-│   │   └── app_colors.dart              # カラーパレット定義
-│   └── widgets/                 # 共通ウィジェット
-│       └── bottom_navigation_bar.dart   # ボトムナビゲーション
+│   ├── animations/                   # アニメーション制御と演出
+│   │   ├── animation_coordinator.dart # キュー・優先度制御
+│   │   ├── animation_providers.dart  # CoordinatorのProvider
+│   │   ├── animation_types.dart      # アニメーション種別・優先度・タスク
+│   │   ├── level_up_overlay.dart     # レベルアップ演出UI
+│   │   ├── level_up_state_provider.dart # レベルアップモーダルの状態
+│   │   ├── mission_complete_overlay.dart # ミッション完了演出UI
+│   │   └── progress_animation_controller.dart # 経験値進捗アニメーション
+│   ├── auth/
+│   │   ├── auth_service.dart         # Firebase Authenticationと認証状態
+│   │   ├── guest_mode_provider.dart  # ゲストモード状態
+│   │   └── login_screen.dart         # ログイン・アカウント作成画面
+│   ├── router/
+│   │   └── app_router.dart           # go_routerによる画面遷移
+│   ├── theme/
+│   │   └── app_colors.dart           # カラーパレット
+│   ├── utils/
+│   │   ├── app_reload.dart           # アプリ再読み込みの共通API
+│   │   ├── app_reload_stub.dart      # 非Web向け実装
+│   │   └── app_reload_web.dart       # Web向け実装
+│   └── widgets/
+│       ├── bottom_navigation_bar.dart # ボトムナビゲーション
+│       └── max_width_container.dart  # コンテンツ幅制御
 ├── features/
-│   ├── home/                    # ホーム画面機能
-│   │   ├── data/
-│   │   │   └── user_stats_repository.dart   # ユーザー統計データリポジトリ
-│   │   ├── domain/
-│   │   │   ├── user_stats.dart              # ユーザー統計モデル
-│   │   │   ├── user_stats.freezed.dart      # Freezed生成ファイル
-│   │   │   └── user_stats.g.dart            # JSON生成ファイル
-│   │   ├── presentation/
-│   │   │   └── home_screen.dart             # ホーム画面
-│   │   ├── providers/
-│   │   │   ├── exp_progress_controller_provider.dart  # 経験値アニメーション制御
-│   │   │   └── user_stats_provider.dart     # ユーザー統計Provider
-│   │   └── widgets/
-│   │       ├── exp_progress_widget.dart     # 経験値プログレスバー
-│   │       ├── level_display_widget.dart    # レベル表示
-│   │       └── mission_list_widget.dart     # ミッション一覧
-│   ├── mission/                 # ミッション管理機能
-│   │   ├── data/
-│   │   │   └── mission_repository.dart      # ミッションデータリポジトリ
-│   │   ├── domain/
-│   │   │   ├── mission.dart                 # ミッションモデル
-│   │   │   ├── mission.freezed.dart         # Freezed生成ファイル
-│   │   │   ├── mission.g.dart               # JSON生成ファイル
-│   │   │   ├── task.dart                    # タスクモデル
-│   │   │   ├── task.freezed.dart            # Freezed生成ファイル
-│   │   │   └── task.g.dart                  # JSON生成ファイル
-│   │   ├── presentation/
-│   │   │   ├── mission_confirmation_screen.dart  # ミッション確認画面
-│   │   │   ├── mission_created_screen.dart       # ミッション作成完了画面
-│   │   │   ├── mission_creation_screen.dart      # ミッション作成画面
-│   │   │   ├── mission_edit_screen.dart          # ミッション編集画面
-│   │   │   └── missions_screen.dart              # ミッション一覧画面
-│   │   ├── providers/
-│   │   │   ├── mission_provider.dart        # ミッションProvider
-│   │   │   └── task_completion_service.dart # タスク完了処理サービス
-│   │   └── widgets/
-│   │       ├── mission_card_widget.dart     # ミッションカード（編集用）
-│   │       ├── mission_view_card_widget.dart # ミッションカード（表示用）
-│   │       ├── task_item_widget.dart        # タスクアイテム（編集用）
-│   │       └── task_view_item_widget.dart   # タスクアイテム（表示用）
-│   └── settings/                # 設定機能
-│       └── presentation/
-│           └── settings_screen.dart         # 設定画面
+│   ├── home/                         # ホーム画面・レベルと経験値
+│   │   ├── data/user_stats_repository.dart # Hive/Firestoreアクセス
+│   │   ├── domain/user_stats.dart    # ユーザー統計モデル
+│   │   ├── presentation/home_screen.dart
+│   │   ├── providers/                # 統計状態・経験値アニメーション
+│   │   └── widgets/                  # 経験値、レベル、ミッション一覧UI
+│   ├── mission/                      # ミッション・タスク管理
+│   │   ├── data/mission_repository.dart # Hive/Firestoreアクセス
+│   │   ├── domain/                   # Mission・Taskモデル
+│   │   ├── presentation/             # 作成、編集、確認、履歴、一覧画面
+│   │   ├── providers/                # ミッション状態・タスク完了処理
+│   │   └── widgets/                  # ミッション・タスクUI
+│   ├── profile/
+│   │   └── presentation/profile_screen.dart
+│   └── settings/
+│       ├── data/user_settings_repository.dart # Firestore設定アクセス
+│       ├── domain/user_settings.dart # ユーザー設定モデル
+│       ├── presentation/             # 設定、アカウント、データ、法的情報の画面
+│       └── providers/user_settings_provider.dart # 設定状態管理
 ```
 
 ### プラットフォーム対応状況
 
-```
-├── android/         # Android設定（Gradle/Kotlin）
-├── ios/             # iOS設定（Xcode/Swift）
-├── macos/           # macOS設定（CocoaPods）
-├── linux/           # Linux設定（CMake）
-├── windows/         # Windows設定（CMake）
-├── web/             # Web設定
-└── assets/
-    └── animations/
-        └── confetti.json    # Lottieアニメーション
-```
+Flutterプラットフォームのプロジェクト設定としてAndroid、iOS、Web、macOS、Linux、Windowsの各ディレクトリを備える。Firebaseの初期化設定は `firebase_options.dart` で管理する。
 
 ### 採用パッケージ一覧
 
 | パッケージ | バージョン | 用途 |
 |-----------|-----------|------|
-| flutter_riverpod | ^2.6.1 | 状態管理 |
-| riverpod_annotation | ^2.3.5 | Riverpodコード生成 |
+| flutter_riverpod | ^2.6.1 | 状態管理・依存性提供 |
+| riverpod_annotation | ^2.3.5 | Riverpodコード生成用アノテーション |
 | go_router | ^17.1.0 | ルーティング |
-| hive | ^2.2.3 | ローカルストレージ |
-| hive_flutter | ^1.1.0 | Hive Flutter統合 |
-| freezed_annotation | ^2.4.4 | イミュータブルモデル |
-| json_annotation | ^4.9.0 | JSON シリアライズ |
-| google_fonts | ^8.0.1 | カスタムフォント |
-| intl | ^0.20.2 | 国際化対応 |
-| uuid | ^4.5.2 | UUID生成 |
+| hive / hive_flutter | ^2.2.3 / ^1.1.0 | ローカル保存・Flutter統合 |
+| freezed_annotation | ^2.4.4 | イミュータブルなモデル定義 |
+| json_annotation | ^4.9.0 | JSONシリアライズ |
+| intl | ^0.20.2 | 日付・数値のローカライズ |
+| uuid | ^4.5.2 | ミッション・タスクID生成 |
 | lottie | ^3.2.0 | Lottieアニメーション |
+| firebase_core | ^4.4.0 | Firebase初期化 |
+| firebase_auth | ^6.1.4 | メール/パスワード認証 |
+| cloud_firestore | ^6.1.2 | クラウド保存・リアルタイム同期 |
+| flutter_svg | ^2.3.0 | SVG表示 |
+| web | ^1.1.0 | Webプラットフォーム連携 |
+| cupertino_icons | ^1.0.8 | iOS風アイコン |
 
 ### 開発用パッケージ
 
@@ -241,60 +220,44 @@ lib/
 | hive_generator | ^2.0.1 | Hiveアダプター生成 |
 | freezed | ^2.4.7 | Freezedコード生成 |
 | json_serializable | ^6.7.1 | JSON生成 |
+| flutter_test | Flutter SDK | Flutterテスト |
+| flutter_lints | ^6.0.0 | Dart/Flutter Lint |
+| flutter_native_splash | ^2.4.7 | スプラッシュ画面生成 |
 
 ### 状態管理
 
-- **Riverpod**を採用
-- アニメーションと状態の疎結合を実現
-- テストしやすい設計
-- コード生成（riverpod_generator）による型安全な実装
+- **Riverpod**を状態管理と依存性提供に使用する。
+- 認証状態、ゲストモード、ユーザー統計、ミッション、設定、アニメーション状態をProvider経由で提供する。
+- 画面（presentation）からProviderを介して状態管理・サービス・Repositoryを利用する。
 
 ### データ永続化
 
-- **Hive**を採用
-- オフライン対応
-- 高速なデータアクセス
-- 軽量なパッケージサイズ
-- Freezedによるイミュータブルなモデル定義
+- **ゲスト利用**: ミッションと統計はHiveに保存し、Firebaseへは書き込まない。設定は初期値を使う。
+- **アカウント利用**: Firebase Authenticationで認証し、ユーザーUIDごとにFirestoreの `users/{uid}` 配下へデータを保存する。ミッションと統計はHiveにも保持し、初期表示用キャッシュとローカル利用に使う。Firestoreの変更はスナップショットで受け取り、Hiveキャッシュへ反映する。
+- 初回のアカウント利用時には、既存のローカルデータをユーザー別データへ移行する処理を持つ。
+- ユーザー設定はログイン時にFirestoreから取得・保存する。未ログイン時はデフォルト設定を返す。
+- ミッション・タスク・統計・設定のモデルにはFreezedとJSONシリアライズを使用する。Hive保存用Adapterは生成コードを利用する。
 
 ---
 
 ## アニメーション管理設計
 
-### 重要な設計原則
+### 現在の実装
 
-**アニメーションの競合防止とシーケンス制御が最重要課題**
+アニメーションの種別と優先度を `AnimationTask` として定義し、`AnimationCoordinator` がキューを管理する。CoordinatorはRiverpod Providerから共有する。
 
-### 推奨コンポーネント
+#### AnimationCoordinator
 
-#### 1. AnimationCoordinator（アニメーション調整役）
+- `AnimationType` はレベルアップ、経験値獲得、進捗バー、タスク完了を扱う。
+- 高優先度タスクは実行中タスクをキャンセルして先頭に挿入する。中優先度は低優先度タスクより前、低優先度はキュー末尾に追加する。
+- 実行中のタスク種別やキューを追跡し、種別ごと・全体のキャンセルにも対応する。
 
-複数のアニメーションをキューイングし、順序通りに実行する中央管理システム。以下の機能を持つ：
-- アニメーションタスクのキュー管理
-- 優先度の高いアニメーション（レベルアップなど）の割り込み処理
-- 実行中のアニメーション状態の追跡
+#### レベルアップ・進捗演出
 
-#### 2. LevelUpAnimationController（レベルアップシーケンス）
-
-レベルアップ時の一連のアニメーションを制御。以下のシーケンスを管理：
-- オーバーレイフェードイン
-- スロットマシン風の数字遷移アニメーション
-- 10の倍数レベル時のコンフェッティ表示（htmlプロトタイプにあるlottiefilesアニメーションを使用）
-- タップによる即座のスキップ機能
-
-#### 3. ProgressAnimationController（プログレスバー）
-
-円形プログレスバーのアニメーション制御：
-- Cubic Bezier イージングによる滑らかな進行
-- タスク完了時のパルスアニメーション
-- 経験値獲得時の視覚的フィードバック
-
-#### 4. ConfettiController（コンフェッティ演出）
-
-マイルストーン達成時の祝福演出：
-- Lottieアニメーションの再生制御
-- 表示/非表示のタイミング管理
-- パフォーマンスへの影響を最小化
+- `LevelUpStateNotifier` がモーダルの開閉、表示中のレベル、保留中のレベル、レベルアップ前の進捗を管理する。
+- `LevelUpOverlay` と `MissionCompleteOverlay` がそれぞれの演出UIを担当する。
+- `ProgressAnimationController` が経験値プログレス表示のアニメーションを担当する。
+- アニメーションの種別や演出内容は `core/animations/` にまとめ、経験値やミッションの状態管理とは分離する。
 
 ---
 
