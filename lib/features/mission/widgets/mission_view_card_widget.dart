@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/mission.dart';
 import 'task_view_item_widget.dart';
@@ -56,7 +57,7 @@ class MissionViewCardWidget extends StatelessWidget {
                         value: progress,
                         backgroundColor: AppColors.borderLight,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.primary,
+                          context.accent,
                         ),
                         strokeWidth: 4,
                       ),

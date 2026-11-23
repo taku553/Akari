@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/user_settings.dart';
 import '../providers/user_settings_provider.dart';
@@ -155,7 +156,7 @@ class _DefaultExpSettingsScreenState
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(),
-        backgroundColor: AppColors.primary,
+        backgroundColor: context.accent,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

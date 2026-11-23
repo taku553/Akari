@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import '../theme/accent_color.dart';
 import '../theme/app_colors.dart';
 import 'level_up_state_provider.dart';
 
@@ -288,7 +289,7 @@ class _LevelUpOverlayState extends ConsumerState<LevelUpOverlay>
         shadows: [
           Shadow(color: Colors.white.withValues(alpha: 0.8), blurRadius: 30),
           Shadow(
-            color: AppColors.primary.withValues(alpha: 0.6),
+            color: context.accent.withValues(alpha: 0.6),
             blurRadius: 60,
           ),
         ],

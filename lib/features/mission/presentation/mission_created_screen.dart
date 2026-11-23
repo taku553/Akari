@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 
 /// ミッション作成成功画面
@@ -106,8 +107,8 @@ class _MissionCreatedScreenState extends State<MissionCreatedScreen>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppColors.primary,
-                      AppColors.primary.withValues(alpha: 0.7),
+                      context.accent,
+                      context.accent.withValues(alpha: 0.7),
                     ],
                   ),
                   shape: BoxShape.circle,

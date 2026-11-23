@@ -21,6 +21,8 @@ import 'features/home/providers/user_stats_provider.dart';
 import 'features/mission/data/mission_repository.dart';
 import 'features/home/data/user_stats_repository.dart';
 import 'features/settings/providers/user_settings_provider.dart';
+import 'features/subscription/providers/subscription_provider.dart';
+import 'core/theme/accent_color.dart';
 
 void main() {
   // Flutterエンジンの初期化
@@ -76,14 +78,7 @@ class _BootstrapAppState extends State<_BootstrapApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF87171),
-          primary: const Color(0xFFF87171),
-        ),
-        useMaterial3: true,
-        fontFamily: 'NotoSansJP',
-      ),
+      theme: buildAppTheme(),
       home: FutureBuilder<void>(
         future: _initFuture,
         builder: (context, snapshot) {
@@ -186,14 +181,7 @@ class MissionLevelerApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF87171),
-          primary: const Color(0xFFF87171),
-        ),
-        useMaterial3: true,
-        fontFamily: 'NotoSansJP',
-      ),
+      theme: buildAppTheme(),
       home: authState.when(
         data: (user) {
           if (user != null) {
@@ -279,14 +267,7 @@ class _GuestAppState extends ConsumerState<_GuestApp> {
     return MaterialApp.router(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF87171),
-          primary: const Color(0xFFF87171),
-        ),
-        useMaterial3: true,
-        fontFamily: 'NotoSansJP',
-      ),
+      theme: buildAppTheme(),
       routerConfig: _router,
     );
   }
@@ -378,14 +359,7 @@ class _AuthenticatedAppState extends ConsumerState<_AuthenticatedApp> {
     return MaterialApp.router(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF87171),
-          primary: const Color(0xFFF87171),
-        ),
-        useMaterial3: true,
-        fontFamily: 'NotoSansJP',
-      ),
+      theme: buildAppTheme(ref.watch(accentColorProvider)),
       routerConfig: _router,
     );
   }

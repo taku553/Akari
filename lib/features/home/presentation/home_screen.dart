@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../mission/providers/mission_provider.dart';
 import '../providers/user_stats_provider.dart';
@@ -141,19 +142,19 @@ class HomeScreen extends ConsumerWidget {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  const Icon(
+                                                  Icon(
                                                     Icons.add_circle_outline,
                                                     size: 16,
-                                                    color: AppColors.primary,
+                                                    color: context.accent,
                                                   ),
                                                   const SizedBox(width: 4),
                                                   Text(
                                                     'ミッションを作成',
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      color: AppColors.primary,
+                                                      color: context.accent,
                                                     ),
                                                   ),
                                                 ],

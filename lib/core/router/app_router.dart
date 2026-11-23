@@ -10,6 +10,7 @@ import '../../features/mission/presentation/mission_history_screen.dart';
 import '../../features/mission/presentation/missions_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/settings/presentation/change_password_screen.dart';
+import '../../features/settings/presentation/color_palette_screen.dart';
 import '../../features/settings/presentation/delete_account_screen.dart';
 import '../../features/settings/presentation/delete_data_screen.dart';
 import '../../features/settings/presentation/default_exp_settings_screen.dart';
@@ -112,6 +113,11 @@ final appRouterProvider = Provider((ref) {
         path: '/settings/default-exp',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const DefaultExpSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/settings/color-palette',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ColorPaletteScreen(),
       ),
       GoRoute(
         path: '/settings/legal-notice',

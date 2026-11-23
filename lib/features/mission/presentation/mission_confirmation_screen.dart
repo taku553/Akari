@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../providers/mission_provider.dart';
@@ -47,7 +48,11 @@ class MissionConfirmationScreen extends ConsumerWidget {
                 // Progress indicator
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [_buildDot(true), _buildDot(true), _buildLine()],
+                  children: [
+                    _buildDot(context, true),
+                    _buildDot(context, true),
+                    _buildLine(context),
+                  ],
                 ),
                 const SizedBox(height: 32),
                 // Confirmation card
@@ -66,12 +71,12 @@ class MissionConfirmationScreen extends ConsumerWidget {
                         height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: context.accent.withValues(alpha: 0.1),
                         ),
                         child: Icon(
                           Icons.gps_fixed,
                           size: 32,
-                          color: AppColors.primary,
+                          color: context.accent,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -106,7 +111,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                 width: 28,
                                 height: 28,
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary,
+                                  color: context.accent,
                                   shape: BoxShape.circle,
                                 ),
                                 alignment: Alignment.center,
@@ -136,7 +141,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(
+                                  color: context.accent.withValues(
                                     alpha: 0.1,
                                   ),
                                   borderRadius: BorderRadius.circular(6),
@@ -146,7 +151,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
-                                    color: AppColors.primary,
+                                    color: context.accent,
                                   ),
                                 ),
                               ),
@@ -185,7 +190,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: context.accent,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -236,24 +241,24 @@ class MissionConfirmationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDot(bool isFilled) {
+  Widget _buildDot(BuildContext context, bool isFilled) {
     return Container(
       width: 12,
       height: 12,
       decoration: BoxDecoration(
-        color: isFilled ? AppColors.primary : AppColors.border,
+        color: isFilled ? context.accent : AppColors.border,
         shape: BoxShape.circle,
       ),
     );
   }
 
-  Widget _buildLine() {
+  Widget _buildLine(BuildContext context) {
     return Container(
       width: 40,
       height: 4,
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: context.accent,
         borderRadius: BorderRadius.circular(2),
       ),
     );

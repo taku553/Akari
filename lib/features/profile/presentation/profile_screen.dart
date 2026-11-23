@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/auth/auth_service.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
@@ -59,7 +60,7 @@ class ProfileScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       children: [
         // アイコン＋レベル表示エリア
-        _buildProfileHeader(user, userStats),
+        _buildProfileHeader(context, user, userStats),
         const SizedBox(height: 24),
         // アカウント情報セクション
         _buildInfoSection(
@@ -115,7 +116,11 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader(User user, AsyncValue userStats) {
+  Widget _buildProfileHeader(
+    BuildContext context,
+    User user,
+    AsyncValue userStats,
+  ) {
     final level = userStats.when(
       data: (stats) => stats.level,
       loading: () => 0,
@@ -137,13 +142,13 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               CircleAvatar(
                 radius: 48,
-                backgroundColor: AppColors.primaryBackground,
+                backgroundColor: context.accentBackground,
                 child: Text(
                   _getInitial(user.email),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.primary,
+                    color: context.accent,
                   ),
                 ),
               ),
@@ -178,15 +183,15 @@ class ProfileScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primaryBackground,
+              color: context.accentBackground,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               'Lv. $level',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+                color: context.accent,
               ),
             ),
           ),

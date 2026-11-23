@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/animations/progress_animation_controller.dart';
 import '../domain/mission.dart';
@@ -113,7 +114,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                             value: animatedProgress,
                             backgroundColor: AppColors.borderLight,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.primary,
+                              context.accent,
                             ),
                             strokeWidth: 4,
                           ),

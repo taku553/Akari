@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../theme/accent_color.dart';
 import '../theme/app_colors.dart';
 
 /// ミッション完了時に表示されるモーダルオーバーレイ
@@ -231,7 +232,7 @@ class _MissionCompleteOverlayState extends State<MissionCompleteOverlay>
                     blurRadius: 30,
                   ),
                   Shadow(
-                    color: AppColors.primary.withValues(alpha: 0.6),
+                    color: context.accent.withValues(alpha: 0.6),
                     blurRadius: 60,
                   ),
                 ],

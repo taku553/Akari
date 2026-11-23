@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
@@ -137,9 +138,9 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
     if (mounted) {
       context.pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ミッションを更新しました！'),
-          backgroundColor: AppColors.primary,
+        SnackBar(
+          content: const Text('ミッションを更新しました！'),
+          backgroundColor: context.accent,
         ),
       );
     }
@@ -194,7 +195,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    borderSide: BorderSide(color: context.accent, width: 2),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -310,7 +311,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: AppColors.primary,
+                                color: context.accent,
                                 width: 2,
                               ),
                             ),
@@ -344,7 +345,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: AppColors.primary,
+                                color: context.accent,
                                 width: 2,
                               ),
                             ),
@@ -384,8 +385,8 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                   icon: const Icon(Icons.add),
                   label: const Text('タスクを追加'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: BorderSide(color: AppColors.primary),
+                    foregroundColor: context.accent,
+                    side: BorderSide(color: context.accent),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -397,7 +398,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
               ElevatedButton(
                 onPressed: _updateMission,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: context.accent,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 2,

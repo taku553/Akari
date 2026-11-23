@@ -11,6 +11,9 @@ class UserSettings with _$UserSettings {
     // key: レベルの文字列(例: "1", "10"), value: デフォルト経験値
     // 初期値として、レベル1から250とする設定を含めておく
     @Default({'1': 250}) Map<String, int> defaultTaskExpMap,
+    // カラーパレットで選択したアクセントカラー(0xAARRGGBB)。null はデフォルト色。
+    // サブスクリプション解約後も値は保持し、表示時にデフォルト色へ戻す。
+    int? accentColorValue,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>

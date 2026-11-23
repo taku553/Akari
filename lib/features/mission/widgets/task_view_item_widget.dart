@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/task.dart';
 
@@ -26,12 +27,12 @@ class TaskViewItemWidget extends StatelessWidget {
               height: 22,
               decoration: BoxDecoration(
                 color: task.isCompleted
-                    ? AppColors.primary
+                    ? context.accent
                     : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: task.isCompleted
-                      ? AppColors.primary
+                      ? context.accent
                       : AppColors.borderDark,
                   width: 2,
                 ),
@@ -61,7 +62,7 @@ class TaskViewItemWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
+                color: context.accent.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -69,7 +70,7 @@ class TaskViewItemWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  color: context.accent,
                 ),
               ),
             ),

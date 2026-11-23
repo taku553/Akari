@@ -6,6 +6,7 @@ import '../../../core/animations/animation_types.dart';
 import '../../../core/animations/level_up_overlay.dart';
 import '../../../core/animations/level_up_state_provider.dart';
 import '../../../core/animations/mission_complete_overlay.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../home/providers/user_stats_provider.dart';
 import '../../home/providers/exp_progress_controller_provider.dart';
@@ -254,8 +255,8 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: _handleTap,
-            splashColor: AppColors.primary.withValues(alpha: 0.1),
-            highlightColor: AppColors.primary.withValues(alpha: 0.05),
+            splashColor: context.accent.withValues(alpha: 0.1),
+            highlightColor: context.accent.withValues(alpha: 0.05),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
               child: Row(
@@ -266,12 +267,12 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                     height: 22,
                     decoration: BoxDecoration(
                       color: widget.task.isCompleted
-                          ? AppColors.primary
+                          ? context.accent
                           : Colors.transparent,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: widget.task.isCompleted
-                            ? AppColors.primary
+                            ? context.accent
                             : AppColors.borderDark,
                         width: 2,
                       ),
@@ -305,7 +306,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                       fontWeight: FontWeight.w600,
                       color: widget.task.isCompleted
                           ? AppColors.borderDark
-                          : AppColors.primary,
+                          : context.accent,
                     ),
                   ),
                 ],

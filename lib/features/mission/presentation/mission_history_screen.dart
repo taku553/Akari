@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../domain/mission.dart';
@@ -210,40 +211,40 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
               margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primaryBackground,
+                color: context.accentBackground,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.trending_up,
                     size: 14,
-                    color: AppColors.primary,
+                    color: context.accent,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     'Lv.$levelBefore',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: context.accent,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
                     child: Icon(
                       Icons.arrow_forward,
                       size: 12,
-                      color: AppColors.primary,
+                      color: context.accent,
                     ),
                   ),
                   Text(
                     'Lv.$levelAfter',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      color: context.accent,
                     ),
                   ),
                   if (levelAfter > levelBefore) ...[

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/animations/progress_animation_controller.dart';
 import '../../../core/animations/level_up_state_provider.dart';
 import '../providers/exp_progress_controller_provider.dart';
@@ -186,7 +187,7 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                     painter: _CircularProgressPainter(
                       progress: animatedProgress,
                       backgroundColor: AppColors.borderLight,
-                      progressColor: AppColors.primary,
+                      progressColor: context.accent,
                       strokeWidth: 18,
                     ),
                   ),
@@ -261,7 +262,7 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
+                              color: context.accent,
                             ),
                           ),
                           Text(
@@ -349,6 +350,7 @@ class _CircularProgressPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CircularProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    return oldDelegate.progress != progress ||
+        oldDelegate.progressColor != progressColor;
   }
 }

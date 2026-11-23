@@ -6,6 +6,8 @@ import '../../../core/auth/guest_mode_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
+import '../../subscription/providers/subscription_provider.dart';
+import '../../../core/theme/accent_color.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -44,6 +46,20 @@ class SettingsScreen extends ConsumerWidget {
                   icon: Icons.star_outline,
                   title: 'デフォルト経験値の設定',
                   onTap: () => context.push('/settings/default-exp'),
+                ),
+                _SettingsItem(
+                  icon: Icons.palette_outlined,
+                  title: 'カラーパレット',
+                  trailing: ref.watch(canUseColorPaletteProvider)
+                      ? const Icon(
+                          Icons.chevron_right,
+                          color: Color(0xFFA0AEC0),
+                        )
+                      : const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFFA0AEC0),
+                        ),
+                  onTap: () => _onColorPaletteTap(context, ref),
                 ),
                 _SettingsItem(
                   icon: Icons.info_outline,
@@ -121,6 +137,46 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// カラーパレットの項目タップ時。利用できる場合のみ画面へ進み、それ以外は理由を案内する。
+  Future<void> _onColorPaletteTap(BuildContext context, WidgetRef ref) async {
+    if (ref.read(canUseColorPaletteProvider)) {
+      context.push('/settings/color-palette');
+      return;
+    }
+
+    final isGuest = ref.read(isGuestModeProvider);
+    final goToSignUp = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('カラーパレット'),
+        content: Text(
+          isGuest
+              ? 'カラーパレットはサブスクリプション限定の機能です。'
+                    'サブスクリプションの登録にはアカウント（会員登録）が必要です。'
+              : 'カラーパレットはサブスクリプション限定の機能です。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('閉じる'),
+          ),
+          if (isGuest)
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('アカウントを作成'),
+            ),
+        ],
+      ),
+    );
+
+    if (goToSignUp == true) {
+      // ゲストバナーの「アカウントを作成」と同じ遷移（新規登録フォームを開く）
+      ref.read(isFromGuestModeProvider.notifier).state = true;
+      ref.read(guestExitToLoginProvider.notifier).state = false;
+      ref.read(isGuestModeProvider.notifier).state = false;
+    }
   }
 
   /// ゲストモード中はアカウントセクションを非表示にする
@@ -300,13 +356,13 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundColor: AppColors.primaryBackground,
+              backgroundColor: context.accentBackground,
               child: Text(
                 _getInitial(user?.email),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  color: context.accent,
                 ),
               ),
             ),

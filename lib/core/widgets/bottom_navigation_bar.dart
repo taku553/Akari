@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../theme/accent_color.dart';
 import '../theme/app_colors.dart';
 
 /// ShellRoute 用のスキャフォールド
@@ -110,7 +111,7 @@ class _NavItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
           color: isActive
-              ? AppColors.primary.withValues(alpha: 0.1)
+              ? context.accent.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -120,7 +121,7 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 24,
-              color: isActive ? AppColors.primary : AppColors.textTertiary,
+              color: isActive ? context.accent : AppColors.textTertiary,
             ),
             const SizedBox(height: 4),
             Text(
@@ -129,7 +130,7 @@ class _NavItem extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
-                color: isActive ? AppColors.primary : AppColors.textTertiary,
+                color: isActive ? context.accent : AppColors.textTertiary,
               ),
             ),
           ],

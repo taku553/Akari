@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../widgets/mission_view_card_widget.dart';
@@ -45,7 +46,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
             child: Text(
               'はい',
               style: TextStyle(
-                color: AppColors.primary,
+                color: context.accent,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -137,7 +138,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
                             context.push('/mission/edit', extra: mission);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: context.accent,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             elevation: 2,
@@ -161,9 +162,9 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
                             _showDeleteConfirmationDialog(context, mission);
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary,
+                            foregroundColor: context.accent,
                             side: BorderSide(
-                              color: AppColors.primary,
+                              color: context.accent,
                               width: 2,
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 16),
