@@ -17,8 +17,9 @@ final userSettingsNotifierProvider =
 class UserSettingsNotifier extends AsyncNotifier<UserSettings> {
   @override
   Future<UserSettings> build() async {
-    final authService = ref.watch(authServiceProvider);
-    final uid = authService.uid;
+    // 認証状態が確定するまで待つ（Web では起動直後に currentUser が null のことがあるため）
+    final user = await ref.watch(authStateProvider.future);
+    final uid = user?.uid;
     if (uid == null) {
       return const UserSettings(); // 未ログイン時はデフォルト
     }
