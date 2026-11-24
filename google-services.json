@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "145475121986",
+    "project_id": "mylevelapp-71eac",
+    "storage_bucket": "mylevelapp-71eac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145475121986:android:d53f56f4d74986541acedb",
+        "android_client_info": {
+          "package_name": "com.akari_le"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145475121986-rcutk017b3a4j8ha0i042l8idjua9cbc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.akari_le",
+            "certificate_hash": "51c6a485bf4b58efc12c82fbc9fe02723de88cf3"
+          }
+        },
+        {
+          "client_id": "145475121986-vo32lu72f5kgorgik1fpnpspga8jhdus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEo-JJHDFAb2uacOOMr7Q1zRpDb62PMb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145475121986-vo32lu72f5kgorgik1fpnpspga8jhdus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

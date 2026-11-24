@@ -176,19 +176,19 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   onPressed: _isLoading ? null : _changePassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.accent,
-                    foregroundColor: Colors.white,
+                    foregroundColor: context.onAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 0,
                   ),
                   child: _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: context.onAccent,
                           ),
                         )
                       : const Text(

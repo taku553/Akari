@@ -113,7 +113,7 @@ class _MissionCreatedScreenState extends State<MissionCreatedScreen>
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, color: Colors.white, size: 40),
+                child: Icon(Icons.check, color: context.onAccent, size: 40),
               ),
             ),
             const SizedBox(height: 20),

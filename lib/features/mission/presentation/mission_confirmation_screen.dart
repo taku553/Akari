@@ -117,10 +117,10 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   '${index + 1}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color: context.onAccent,
                                   ),
                                 ),
                               ),
@@ -189,7 +189,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.accent,
-                      foregroundColor: Colors.white,
+                      foregroundColor: context.onAccent,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),

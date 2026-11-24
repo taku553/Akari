@@ -3,6 +3,7 @@ import 'package:akari/core/theme/accent_color.dart';
 import 'package:akari/core/theme/app_colors.dart';
 import 'package:akari/core/theme/app_palette.dart';
 import 'package:akari/core/theme/theme_mode_provider.dart';
+import 'package:akari/features/settings/domain/saved_color.dart';
 import 'package:akari/features/settings/domain/user_settings.dart';
 import 'package:akari/features/settings/providers/user_settings_provider.dart';
 import 'package:akari/features/subscription/providers/subscription_provider.dart';
@@ -57,11 +58,23 @@ void main() {
       expect(contrastRatio(Colors.white, Colors.white), closeTo(1, 0.01));
     });
 
-    test('白とのコントラスト比4.5:1の境界を判定する', () {
-      expect(meetsAccentContrast(_savedColor), isTrue);
-      // デフォルトの赤は白とのコントラスト比が約2.8:1で基準未満
-      expect(meetsAccentContrast(AppColors.primary), isFalse);
-      expect(meetsAccentContrast(const Color(0xFFFFFF00)), isFalse);
+    test('背景とのコントラスト比3.1:1の境界を判定する', () {
+      const light = Colors.white;
+      final dark = AppPalette.dark.backgroundWhite;
+      expect(meetsAccentContrast(_savedColor, light), isTrue);
+      // 純白はライトの背景（白）では見えないが、ダークの背景では制約なく使える
+      expect(meetsAccentContrast(Colors.white, light), isFalse);
+      expect(meetsAccentContrast(Colors.white, dark), isTrue);
+      // 暗い色はダークの背景に溶ける
+      expect(meetsAccentContrast(_savedColor, dark), isFalse);
+      expect(meetsAccentContrast(const Color(0xFFFFFF00), light), isFalse);
+    });
+
+    test('onAccentOf は明るい色で黒、デフォルトの赤や暗い色で白を返す', () {
+      expect(onAccentOf(Colors.white), Colors.black);
+      expect(onAccentOf(const Color(0xFFFFFF00)), Colors.black);
+      expect(onAccentOf(AppColors.primary), Colors.white);
+      expect(onAccentOf(_savedColor), Colors.white);
     });
   });
 
@@ -97,6 +110,50 @@ void main() {
       final container = _container(uid: 'user', subscribed: true);
       await container.read(userSettingsNotifierProvider.future);
       expect(container.read(accentColorProvider), _savedColor);
+    });
+
+    test('現在のテーマの背景に溶ける色は、保存値は残したまま表示だけデフォルトの赤にする', () async {
+      final container = _container(uid: 'user', subscribed: true);
+      await container.read(userSettingsNotifierProvider.future);
+      // 暗い紺はライトでは表示できるが、ダークの背景では溶ける
+      await container.read(themeModeProvider.notifier).setDark(true);
+      expect(container.read(accentColorProvider), AppColors.primary);
+      final settings = container.read(userSettingsNotifierProvider).value!;
+      expect(settings.accentColorValue, _savedColor.toARGB32());
+      await container.read(themeModeProvider.notifier).setDark(false);
+      expect(container.read(accentColorProvider), _savedColor);
+    });
+
+    test('ダークで選んだ純白は、ダークでは表示されライトでは表示だけデフォルトになる', () async {
+      final container = ProviderContainer(
+        overrides: [
+          currentUidProvider.overrideWithValue('user'),
+          hasSubscriptionProvider.overrideWithValue(true),
+          userSettingsNotifierProvider.overrideWith(
+            () => _FakeUserSettingsNotifier(
+              UserSettings(accentColorValue: Colors.white.toARGB32()),
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      await container.read(userSettingsNotifierProvider.future);
+      await container.read(themeModeProvider.notifier).setDark(true);
+      expect(container.read(accentColorProvider), Colors.white);
+      await container.read(themeModeProvider.notifier).setDark(false);
+      expect(container.read(accentColorProvider), AppColors.primary);
+    });
+
+    test('保存した色は名前付きでJSONに往復変換できる（Firestore保存用）', () {
+      const settings = UserSettings(
+        savedColors: [SavedColor(name: '緑', colorValue: 0xFF2E7D32)],
+      );
+      final json = settings.toJson();
+      expect(json['savedColors'], [
+        {'name': '緑', 'colorValue': 0xFF2E7D32},
+      ]);
+      expect(UserSettings.fromJson(json), settings);
+      expect(UserSettings.fromJson({}).savedColors, isEmpty);
     });
 
     test('サブスク無効（未契約・解約後）なら保存値があってもデフォルトの赤を返す', () async {

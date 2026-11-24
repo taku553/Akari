@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../subscription/providers/subscription_provider.dart';
+import '../domain/saved_color.dart';
 import '../domain/user_settings.dart';
 import '../providers/user_settings_provider.dart';
 
@@ -68,22 +69,187 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
 
   Future<void> _save(int? accentColorValue) async {
     setState(() => _isSaving = true);
-    final notifier = ref.read(userSettingsNotifierProvider.notifier);
+    await _updateSettings(
+      (current) => current.copyWith(accentColorValue: accentColorValue),
+    );
+    if (mounted) context.pop();
+  }
+
+  Future<void> _updateSettings(
+    UserSettings Function(UserSettings current) update,
+  ) async {
     final current =
         ref.read(userSettingsNotifierProvider).valueOrNull ??
         const UserSettings();
-    await notifier.updateSettings(
-      current.copyWith(accentColorValue: accentColorValue),
+    await ref
+        .read(userSettingsNotifierProvider.notifier)
+        .updateSettings(update(current));
+  }
+
+  List<SavedColor> get _savedColors =>
+      ref.read(userSettingsNotifierProvider).valueOrNull?.savedColors ??
+      const [];
+
+  void _applySavedColor(SavedColor saved) {
+    final color = Color(saved.colorValue);
+    setState(() {
+      _color = color;
+      _hexError = null;
+      _hexController.text = colorToHex(color);
+    });
+  }
+
+  /// 現在の色に名前を付けて保存する（最大 maxSavedColors 個）
+  Future<void> _saveCurrentColor() async {
+    if (_savedColors.length >= maxSavedColors) {
+      _showMessage('保存できる色は最大$maxSavedColors個です。不要な色を削除してください。');
+      return;
+    }
+    final name = await showDialog<String>(
+      context: context,
+      builder: (_) => _NameDialog(color: _color),
     );
-    if (mounted) context.pop();
+    if (name == null || !mounted) return;
+
+    await _updateSettings(
+      (current) => current.copyWith(
+        savedColors: [
+          ...current.savedColors,
+          SavedColor(name: name, colorValue: _color.toARGB32()),
+        ],
+      ),
+    );
+    if (mounted) _showMessage('「$name」を保存しました');
+  }
+
+  Future<void> _deleteSavedColor(SavedColor target) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('保存した色を削除'),
+        content: Text('「${target.name}」を削除しますか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('削除', style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await _updateSettings(
+      (current) => current.copyWith(
+        savedColors: current.savedColors.where((c) => c != target).toList(),
+      ),
+    );
+  }
+
+  void _showSavedColors() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: context.palette.backgroundWhite,
+      showDragHandle: true,
+      builder: (sheetContext) => Consumer(
+        builder: (_, ref, _) {
+          final saved =
+              ref
+                  .watch(userSettingsNotifierProvider)
+                  .valueOrNull
+                  ?.savedColors ??
+              const <SavedColor>[];
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '保存した色（${saved.length}/$maxSavedColors）',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: context.palette.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (saved.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text(
+                        'まだ保存した色はありません。気に入った色を選んで「この色を保存」を押すと、ここから呼び出せます。',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: context.palette.textSecondary,
+                        ),
+                      ),
+                    ),
+                  for (final item in saved)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Color(item.colorValue),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: context.palette.borderDark),
+                        ),
+                      ),
+                      title: Text(
+                        item.name,
+                        style: TextStyle(color: context.palette.textPrimary),
+                      ),
+                      subtitle: Text(
+                        colorToHex(Color(item.colorValue)),
+                        style: TextStyle(color: context.palette.textSecondary),
+                      ),
+                      onTap: () {
+                        _applySavedColor(item);
+                        Navigator.pop(sheetContext);
+                      },
+                      trailing: IconButton(
+                        tooltip: '削除',
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: context.palette.textSecondary,
+                        ),
+                        onPressed: () => _deleteSavedColor(item),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     final canUse = ref.watch(canUseColorPaletteProvider);
-    final ratio = contrastRatio(_color, Colors.white);
+    final savedCount =
+        ref
+            .watch(userSettingsNotifierProvider)
+            .valueOrNull
+            ?.savedColors
+            .length ??
+        0;
+    final ratio = contrastRatio(_color, context.palette.backgroundWhite);
     final contrastOk = ratio >= minAccentContrastRatio;
-    final canSave = canUse && _hexError == null && contrastOk && !_isSaving;
+    final validColor = _hexError == null && contrastOk;
+    final canSave = canUse && validColor && !_isSaving;
 
     return Scaffold(
       backgroundColor: context.palette.backgroundLight,
@@ -142,6 +308,39 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _showSavedColors,
+                          icon: const Icon(Icons.bookmarks_outlined, size: 18),
+                          label: Text('保存した色を適用 ($savedCount/$maxSavedColors)'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: context.palette.textPrimary,
+                            side: BorderSide(color: context.palette.borderDark),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: canSave ? _saveCurrentColor : null,
+                          icon: const Icon(
+                            Icons.bookmark_add_outlined,
+                            size: 18,
+                          ),
+                          label: const Text('この色を保存'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: context.palette.textPrimary,
+                            side: BorderSide(color: context.palette.borderDark),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   Center(
                     child: ColorPicker(
                       color: _color,
@@ -186,7 +385,7 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: _color,
-                      foregroundColor: Colors.white,
+                      foregroundColor: onAccentOf(_color),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: canSave ? () => _save(_color.toARGB32()) : null,
@@ -200,47 +399,21 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
 
   Widget _buildContrastNotice(double ratio, bool ok) {
     final color = ok ? AppColors.success : AppColors.error;
-    // ボタンの白文字を基準に判定しているため、ダーク背景では暗い色が溶け込む場合がある（保存は妨げない）
-    final darkRatio = contrastRatio(_color, context.palette.backgroundWhite);
-    final showDarkHint = context.isDarkTheme && ok && darkRatio < 3;
-    return Column(
+    final min = minAccentContrastRatio.toStringAsFixed(1);
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(ok ? Icons.check_circle : Icons.error, size: 20, color: color),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                ok
-                    ? '白とのコントラスト比 ${ratio.toStringAsFixed(2)}:1（読みやすい色です）'
-                    : '白とのコントラスト比が ${ratio.toStringAsFixed(2)}:1 です。'
-                          '文字が読みにくくなるため、${minAccentContrastRatio.toStringAsFixed(1)}:1 以上になるよう、もう少し濃い色を選んでください。',
-                style: TextStyle(fontSize: 13, color: color),
-              ),
-            ),
-          ],
-        ),
-        if (showDarkHint) ...[
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.info, size: 20, color: AppColors.warning),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'ダークモードでは、この色は背景に溶け込んで見えにくい場合があります。',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: context.palette.textSecondary,
-                  ),
-                ),
-              ),
-            ],
+        Icon(ok ? Icons.check_circle : Icons.error, size: 20, color: color),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            ok
+                ? '背景とのコントラスト比 ${ratio.toStringAsFixed(2)}:1（見分けやすい色です）'
+                : '背景とのコントラスト比が ${ratio.toStringAsFixed(2)}:1 です。'
+                      '背景に溶けて見えにくくなるため、$min:1 以上になる色を選んでください。',
+            style: TextStyle(fontSize: 13, color: color),
           ),
-        ],
+        ),
       ],
     );
   }
@@ -283,7 +456,7 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
               FilledButton(
                 style: FilledButton.styleFrom(
                   backgroundColor: _color,
-                  foregroundColor: Colors.white,
+                  foregroundColor: onAccentOf(_color),
                 ),
                 onPressed: () {},
                 child: const Text('ボタン'),
@@ -299,6 +472,82 @@ class _ColorPaletteScreenState extends ConsumerState<ColorPaletteScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// 保存する色の名前を入力するダイアログ。入力された名前（空白除去済み）を返す。
+class _NameDialog extends StatefulWidget {
+  final Color color;
+  const _NameDialog({required this.color});
+
+  @override
+  State<_NameDialog> createState() => _NameDialogState();
+}
+
+class _NameDialogState extends State<_NameDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final name = _controller.text.trim();
+    if (name.isEmpty) return;
+    Navigator.pop(context, name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('色に名前を付けて保存'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: widget.color,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: context.palette.borderDark),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(colorToHex(widget.color)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            maxLength: maxSavedColorNameLength,
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => _submit(),
+            decoration: const InputDecoration(
+              labelText: '名前',
+              hintText: '例：お気に入りの緑',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('キャンセル'),
+        ),
+        TextButton(
+          onPressed: _controller.text.trim().isEmpty ? null : _submit,
+          child: const Text('保存'),
+        ),
+      ],
     );
   }
 }

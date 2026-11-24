@@ -157,7 +157,7 @@ class _DefaultExpSettingsScreenState
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(),
         backgroundColor: context.accent,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: context.onAccent),
       ),
     );
   }

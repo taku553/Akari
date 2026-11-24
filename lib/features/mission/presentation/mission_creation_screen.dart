@@ -382,7 +382,7 @@ class _MissionCreationScreenState extends ConsumerState<MissionCreationScreen> {
                 onPressed: _navigateToConfirmation,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.accent,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.onAccent,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 2,
                   shape: RoundedRectangleBorder(

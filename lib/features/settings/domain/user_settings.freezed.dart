@@ -26,7 +26,9 @@ mixin _$UserSettings {
   Map<String, int> get defaultTaskExpMap =>
       throw _privateConstructorUsedError; // カラーパレットで選択したアクセントカラー(0xAARRGGBB)。null はデフォルト色。
   // サブスクリプション解約後も値は保持し、表示時にデフォルト色へ戻す。
-  int? get accentColorValue => throw _privateConstructorUsedError;
+  int? get accentColorValue =>
+      throw _privateConstructorUsedError; // 名前を付けて保存した色（最大 maxSavedColors 個）
+  List<SavedColor> get savedColors => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,7 +43,11 @@ abstract class $UserSettingsCopyWith<$Res> {
     $Res Function(UserSettings) then,
   ) = _$UserSettingsCopyWithImpl<$Res, UserSettings>;
   @useResult
-  $Res call({Map<String, int> defaultTaskExpMap, int? accentColorValue});
+  $Res call({
+    Map<String, int> defaultTaskExpMap,
+    int? accentColorValue,
+    List<SavedColor> savedColors,
+  });
 }
 
 /// @nodoc
@@ -59,6 +65,7 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
   $Res call({
     Object? defaultTaskExpMap = null,
     Object? accentColorValue = freezed,
+    Object? savedColors = null,
   }) {
     return _then(
       _value.copyWith(
@@ -70,6 +77,10 @@ class _$UserSettingsCopyWithImpl<$Res, $Val extends UserSettings>
                 ? _value.accentColorValue
                 : accentColorValue // ignore: cast_nullable_to_non_nullable
                       as int?,
+            savedColors: null == savedColors
+                ? _value.savedColors
+                : savedColors // ignore: cast_nullable_to_non_nullable
+                      as List<SavedColor>,
           )
           as $Val,
     );
@@ -85,7 +96,11 @@ abstract class _$$UserSettingsImplCopyWith<$Res>
   ) = __$$UserSettingsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Map<String, int> defaultTaskExpMap, int? accentColorValue});
+  $Res call({
+    Map<String, int> defaultTaskExpMap,
+    int? accentColorValue,
+    List<SavedColor> savedColors,
+  });
 }
 
 /// @nodoc
@@ -102,6 +117,7 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
   $Res call({
     Object? defaultTaskExpMap = null,
     Object? accentColorValue = freezed,
+    Object? savedColors = null,
   }) {
     return _then(
       _$UserSettingsImpl(
@@ -113,18 +129,25 @@ class __$$UserSettingsImplCopyWithImpl<$Res>
             ? _value.accentColorValue
             : accentColorValue // ignore: cast_nullable_to_non_nullable
                   as int?,
+        savedColors: null == savedColors
+            ? _value._savedColors
+            : savedColors // ignore: cast_nullable_to_non_nullable
+                  as List<SavedColor>,
       ),
     );
   }
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$UserSettingsImpl extends _UserSettings {
   const _$UserSettingsImpl({
     final Map<String, int> defaultTaskExpMap = const {'1': 250},
     this.accentColorValue,
+    final List<SavedColor> savedColors = const [],
   }) : _defaultTaskExpMap = defaultTaskExpMap,
+       _savedColors = savedColors,
        super._();
 
   factory _$UserSettingsImpl.fromJson(Map<String, dynamic> json) =>
@@ -148,10 +171,20 @@ class _$UserSettingsImpl extends _UserSettings {
   // サブスクリプション解約後も値は保持し、表示時にデフォルト色へ戻す。
   @override
   final int? accentColorValue;
+  // 名前を付けて保存した色（最大 maxSavedColors 個）
+  final List<SavedColor> _savedColors;
+  // 名前を付けて保存した色（最大 maxSavedColors 個）
+  @override
+  @JsonKey()
+  List<SavedColor> get savedColors {
+    if (_savedColors is EqualUnmodifiableListView) return _savedColors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_savedColors);
+  }
 
   @override
   String toString() {
-    return 'UserSettings(defaultTaskExpMap: $defaultTaskExpMap, accentColorValue: $accentColorValue)';
+    return 'UserSettings(defaultTaskExpMap: $defaultTaskExpMap, accentColorValue: $accentColorValue, savedColors: $savedColors)';
   }
 
   @override
@@ -164,7 +197,11 @@ class _$UserSettingsImpl extends _UserSettings {
               _defaultTaskExpMap,
             ) &&
             (identical(other.accentColorValue, accentColorValue) ||
-                other.accentColorValue == accentColorValue));
+                other.accentColorValue == accentColorValue) &&
+            const DeepCollectionEquality().equals(
+              other._savedColors,
+              _savedColors,
+            ));
   }
 
   @JsonKey(ignore: true)
@@ -173,6 +210,7 @@ class _$UserSettingsImpl extends _UserSettings {
     runtimeType,
     const DeepCollectionEquality().hash(_defaultTaskExpMap),
     accentColorValue,
+    const DeepCollectionEquality().hash(_savedColors),
   );
 
   @JsonKey(ignore: true)
@@ -191,6 +229,7 @@ abstract class _UserSettings extends UserSettings {
   const factory _UserSettings({
     final Map<String, int> defaultTaskExpMap,
     final int? accentColorValue,
+    final List<SavedColor> savedColors,
   }) = _$UserSettingsImpl;
   const _UserSettings._() : super._();
 
@@ -203,6 +242,8 @@ abstract class _UserSettings extends UserSettings {
   @override // カラーパレットで選択したアクセントカラー(0xAARRGGBB)。null はデフォルト色。
   // サブスクリプション解約後も値は保持し、表示時にデフォルト色へ戻す。
   int? get accentColorValue;
+  @override // 名前を付けて保存した色（最大 maxSavedColors 個）
+  List<SavedColor> get savedColors;
   @override
   @JsonKey(ignore: true)
   _$$UserSettingsImplCopyWith<_$UserSettingsImpl> get copyWith =>

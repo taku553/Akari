@@ -278,7 +278,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                       ),
                     ),
                     child: widget.task.isCompleted
-                        ? const Icon(Icons.check, color: Colors.white, size: 14)
+                        ? Icon(Icons.check, color: context.onAccent, size: 14)
                         : null,
                   ),
                   const SizedBox(width: 12),

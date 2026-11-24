@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_palette.dart';
 
-/// アクセントカラーが満たすべき、白との最小コントラスト比（WCAG 2.1 AA）
-const double minAccentContrastRatio = 4.5;
+/// アクセントカラーが背景に対して満たすべき最小コントラスト比。
+/// ゲージ・ボタン・アイコンなど図形・UI部品が主な用途のため、文字用の4.5:1より緩い値にしている。
+const double minAccentContrastRatio = 3.1;
+
+/// アクセント色の上に白文字を置く場合に許容する、白とのコントラスト比の下限。
+/// デフォルトの赤（約2.8:1）が白文字のままになるよう、これを下回る明るい色だけ黒文字にする。
+const double _minWhiteOnAccentRatio = 2.5;
 
 final RegExp _hexColorPattern = RegExp(r'^#?([0-9a-fA-F]{6})$');
 
@@ -29,9 +34,15 @@ double contrastRatio(Color a, Color b) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-/// 白背景・白文字のどちらでも読める（白とのコントラスト比が基準以上）かどうか
-bool meetsAccentContrast(Color color) =>
-    contrastRatio(color, Colors.white) >= minAccentContrastRatio;
+/// アクセント色が背景[background]に対して見分けられる（コントラスト比が基準以上）かどうか
+bool meetsAccentContrast(Color color, Color background) =>
+    contrastRatio(color, background) >= minAccentContrastRatio;
+
+/// アクセント色の上に置く文字・アイコンの色。明るいアクセント色（純白など）では黒にする。
+Color onAccentOf(Color accent) =>
+    contrastRatio(accent, Colors.white) >= _minWhiteOnAccentRatio
+    ? Colors.white
+    : Colors.black;
 
 /// アクセントカラーを薄く[base]に重ねた背景色。ライトのデフォルトの赤では AppColors.primaryBackground とほぼ一致する。
 Color accentBackgroundOf(
@@ -44,6 +55,7 @@ Color accentBackgroundOf(
 /// MaterialApp のテーマ（colorScheme.primary）を参照するため、色が変わると自動で再描画される。
 extension AccentColorContext on BuildContext {
   Color get accent => Theme.of(this).colorScheme.primary;
+  Color get onAccent => Theme.of(this).colorScheme.onPrimary;
   Color get accentBackground => accentBackgroundOf(
     accent,
     base: palette.backgroundWhite,
@@ -62,7 +74,7 @@ ThemeData buildAppTheme({
     colorScheme: ColorScheme.fromSeed(
       seedColor: accent,
       primary: accent,
-      onPrimary: Colors.white,
+      onPrimary: onAccentOf(accent),
       brightness: brightness,
       surface: isDark ? palette.backgroundWhite : null,
       onSurface: isDark ? palette.textPrimary : null,

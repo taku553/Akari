@@ -415,7 +415,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                 onPressed: _updateMission,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.accent,
-                  foregroundColor: Colors.white,
+                  foregroundColor: context.onAccent,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 2,
                   shape: RoundedRectangleBorder(

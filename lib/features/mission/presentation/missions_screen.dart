@@ -139,7 +139,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: context.accent,
-                            foregroundColor: Colors.white,
+                            foregroundColor: context.onAccent,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             elevation: 2,
                             shape: RoundedRectangleBorder(
