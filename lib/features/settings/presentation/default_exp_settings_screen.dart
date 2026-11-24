@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_palette.dart';
-import '../domain/user_settings.dart';
 import '../providers/user_settings_provider.dart';
 
 class DefaultExpSettingsScreen extends ConsumerStatefulWidget {
@@ -30,10 +29,10 @@ class _DefaultExpSettingsScreenState
 
   // 設定を保存する処理
   void _saveSettings() {
+    // 読み込み中・失敗時は空の設定で上書きしないよう保存を中断する
+    final current = ref.read(userSettingsNotifierProvider).valueOrNull;
+    if (current == null) return;
     final notifier = ref.read(userSettingsNotifierProvider.notifier);
-    final current =
-        ref.read(userSettingsNotifierProvider).valueOrNull ??
-        const UserSettings();
     notifier.updateSettings(current.copyWith(defaultTaskExpMap: _tempExpMap));
     ScaffoldMessenger.of(
       context,
