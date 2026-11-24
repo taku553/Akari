@@ -31,9 +31,6 @@ class _DefaultExpSettingsScreenState
   void _saveSettings() {
     // 読み込み中・失敗時は空の設定で上書きしないよう保存を中断する
     final current = ref.read(userSettingsNotifierProvider).valueOrNull;
-    debugPrint(
-      '[DBG] save: state有無=${current != null} accent=${current?.accentColorValue}',
-    );
     if (current == null) return;
     final notifier = ref.read(userSettingsNotifierProvider.notifier);
     notifier.updateSettings(current.copyWith(defaultTaskExpMap: _tempExpMap));

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_service.dart';
 import '../data/user_settings_repository.dart';
@@ -21,16 +20,11 @@ class UserSettingsNotifier extends AsyncNotifier<UserSettings> {
     // 認証状態が確定するまで待つ（Web では起動直後に currentUser が null のことがあるため）
     final user = await ref.watch(authStateProvider.future);
     final uid = user?.uid;
-    debugPrint('[DBG] build: uid有無=${uid != null}');
     if (uid == null) {
       return const UserSettings(); // 未ログイン時はデフォルト
     }
     final repository = ref.read(userSettingsRepositoryProvider);
-    final loaded = await repository.getSettings(uid);
-    debugPrint(
-      '[DBG] build: loaded accent=${loaded.accentColorValue} saved=${loaded.savedColors.length}',
-    );
-    return loaded;
+    return repository.getSettings(uid);
   }
 
   /// 設定を更新し、Firestoreにも保存する

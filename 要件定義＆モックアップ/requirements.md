@@ -281,6 +281,9 @@ Flutterプラットフォームのプロジェクト設定としてAndroid、iOS
 - **アカウント利用**: Firebase Authenticationで認証し、ユーザーUIDごとにFirestoreの `users/{uid}` 配下へデータを保存する。ミッションと統計はHiveにも保持し、初期表示用キャッシュとローカル利用に使う。Firestoreの変更はスナップショットで受け取り、Hiveキャッシュへ反映する。
 - 初回のアカウント利用時には、既存のローカルデータをユーザー別データへ移行する処理を持つ。
 - ユーザー設定はログイン時にFirestoreから取得・保存する。未ログイン時はデフォルト設定を返す。
+- 設定は `users/{uid}` の `settings` フィールドに保存する。統計など他のフィールドを書き込む際は、`settings` を消さないよう必ずmerge（`SetOptions(merge: true)`）で書き込む。
+- 設定の一部（デフォルト経験値など）を変更する際は、読み込み済みの現在の設定を `copyWith` で更新して保存し、カラー（`accentColorValue`・`savedColors`）などの他の項目を消さない。設定が未読み込みの状態では保存しない。
+- Webは `firebase.json` のHostingヘッダーで `index.html`・`main.dart.js`・`flutter_service_worker.js` などをキャッシュさせない（`no-cache`）。古いアプリ本体が残り、古い保存処理で設定が上書きされることを防ぐ。
 - ミッション・タスク・統計・設定のモデルにはFreezedとJSONシリアライズを使用する。Hive保存用Adapterは生成コードを利用する。
 
 ---
