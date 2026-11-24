@@ -30,7 +30,10 @@ class _DefaultExpSettingsScreenState
 
   void _saveSettings() {
     final notifier = ref.read(userSettingsNotifierProvider.notifier);
-    notifier.updateSettings(UserSettings(defaultTaskExpMap: _tempExpMap));
+    final current =
+        ref.read(userSettingsNotifierProvider).valueOrNull ??
+        const UserSettings();
+    notifier.updateSettings(current.copyWith(defaultTaskExpMap: _tempExpMap));
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('デフォルト経験値の設定を保存しました')));
