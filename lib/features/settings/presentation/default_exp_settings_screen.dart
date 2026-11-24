@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../domain/user_settings.dart';
 import '../providers/user_settings_provider.dart';
 
@@ -98,14 +98,14 @@ class _DefaultExpSettingsScreenState
     final settingsAsyncValue = ref.watch(userSettingsNotifierProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'デフォルト経験値の設定',
-          style: TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: context.palette.textPrimary),
         ),
-        backgroundColor: AppColors.backgroundWhite,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        backgroundColor: context.palette.backgroundWhite,
+        iconTheme: IconThemeData(color: context.palette.textPrimary),
         actions: [
           IconButton(icon: const Icon(Icons.check), onPressed: _saveSettings),
         ],

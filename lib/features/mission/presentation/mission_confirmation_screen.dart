@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../providers/mission_provider.dart';
 
@@ -19,19 +19,19 @@ class MissionConfirmationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'CONFIRM',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
@@ -59,9 +59,9 @@ class MissionConfirmationScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundWhite,
+                    color: context.palette.backgroundWhite,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border, width: 1),
+                    border: Border.all(color: context.palette.border, width: 1),
                   ),
                   child: Column(
                     children: [
@@ -86,7 +86,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.5,
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -95,7 +95,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: context.palette.textPrimary,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -131,7 +131,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.textPrimary,
+                                    color: context.palette.textPrimary,
                                   ),
                                 ),
                               ),
@@ -141,9 +141,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: context.accent.withValues(
-                                    alpha: 0.1,
-                                  ),
+                                  color: context.accent.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -165,7 +163,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                           height: 1.6,
                         ),
                         textAlign: TextAlign.center,
@@ -215,8 +213,8 @@ class MissionConfirmationScreen extends ConsumerWidget {
                   child: OutlinedButton(
                     onPressed: () => context.pop(),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: BorderSide(color: AppColors.border, width: 1),
+                      foregroundColor: context.palette.textPrimary,
+                      side: BorderSide(color: context.palette.border, width: 1),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -228,7 +226,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
-                        color: AppColors.textPrimary,
+                        color: context.palette.textPrimary,
                       ),
                     ),
                   ),
@@ -246,7 +244,7 @@ class MissionConfirmationScreen extends ConsumerWidget {
       width: 12,
       height: 12,
       decoration: BoxDecoration(
-        color: isFilled ? context.accent : AppColors.border,
+        color: isFilled ? context.accent : context.palette.border,
         shape: BoxShape.circle,
       ),
     );

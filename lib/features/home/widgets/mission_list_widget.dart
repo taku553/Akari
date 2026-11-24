@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../mission/providers/mission_provider.dart';
 import '../../mission/widgets/mission_card_widget.dart';
 
@@ -31,32 +31,32 @@ class MissionListWidget extends ConsumerWidget {
       ),
       data: (missions) {
         if (missions.isEmpty) {
-          return const SliverToBoxAdapter(
+          return SliverToBoxAdapter(
             child: Center(
               child: Padding(
-                padding: EdgeInsets.all(48.0),
+                padding: const EdgeInsets.all(48.0),
                 child: Column(
                   children: [
                     Icon(
                       Icons.gps_fixed,
                       size: 80,
-                      color: AppColors.textTertiary,
+                      color: context.palette.textTertiary,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       'ミッションがありません',
                       style: TextStyle(
                         fontSize: 18,
-                        color: AppColors.textSecondary,
+                        color: context.palette.textSecondary,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       '上の+ボタンまたは下のボタンから新しいミッションを作成',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textTertiary,
+                        color: context.palette.textTertiary,
                       ),
                     ),
                   ],

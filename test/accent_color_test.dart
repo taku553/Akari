@@ -1,6 +1,8 @@
 import 'package:akari/core/auth/auth_service.dart';
 import 'package:akari/core/theme/accent_color.dart';
 import 'package:akari/core/theme/app_colors.dart';
+import 'package:akari/core/theme/app_palette.dart';
+import 'package:akari/core/theme/theme_mode_provider.dart';
 import 'package:akari/features/settings/domain/user_settings.dart';
 import 'package:akari/features/settings/providers/user_settings_provider.dart';
 import 'package:akari/features/subscription/providers/subscription_provider.dart';
@@ -18,10 +20,7 @@ class _FakeUserSettingsNotifier extends UserSettingsNotifier {
 
 const _savedColor = Color(0xFF1E3A8A);
 
-ProviderContainer _container({
-  required String? uid,
-  required bool subscribed,
-}) {
+ProviderContainer _container({required String? uid, required bool subscribed}) {
   final container = ProviderContainer(
     overrides: [
       currentUidProvider.overrideWithValue(uid),
@@ -63,6 +62,33 @@ void main() {
       // デフォルトの赤は白とのコントラスト比が約2.8:1で基準未満
       expect(meetsAccentContrast(AppColors.primary), isFalse);
       expect(meetsAccentContrast(const Color(0xFFFFFF00)), isFalse);
+    });
+  });
+
+  group('ダークテーマ', () {
+    test('buildAppTheme はブライトネスに応じたパレットを持つ', () {
+      final dark = buildAppTheme(brightness: Brightness.dark);
+      expect(dark.brightness, Brightness.dark);
+      expect(dark.extension<AppPalette>(), AppPalette.dark);
+      expect(buildAppTheme().extension<AppPalette>(), AppPalette.light);
+    });
+
+    test('ダークの文字色は背景に対してWCAG AA(4.5:1)を満たす', () {
+      const p = AppPalette.dark;
+      for (final bg in [p.backgroundWhite, p.backgroundLight]) {
+        expect(contrastRatio(p.textPrimary, bg), greaterThanOrEqualTo(4.5));
+        expect(contrastRatio(p.textSecondary, bg), greaterThanOrEqualTo(4.5));
+        expect(contrastRatio(p.textTertiary, bg), greaterThanOrEqualTo(3));
+      }
+    });
+
+    test('themeModeProvider は切り替えできる（Hive未初期化でも動作）', () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      expect(container.read(themeModeProvider), ThemeMode.light);
+      await container.read(themeModeProvider.notifier).setDark(true);
+      expect(container.read(themeModeProvider), ThemeMode.dark);
+      expect(container.read(brightnessProvider), Brightness.dark);
     });
   });
 

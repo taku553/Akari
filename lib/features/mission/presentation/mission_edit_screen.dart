@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
 import '../../settings/providers/user_settings_provider.dart';
@@ -149,13 +150,16 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
-        title: Text('ミッションを編集', style: TextStyle(color: AppColors.textPrimary)),
+        title: Text(
+          'ミッションを編集',
+          style: TextStyle(color: context.palette.textPrimary),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.close, color: AppColors.textPrimary),
+          icon: Icon(Icons.close, color: context.palette.textPrimary),
           onPressed: () => context.pop(),
         ),
       ),
@@ -172,26 +176,26 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: context.palette.textPrimary,
                   ),
                 ),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _missionTitleController,
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: context.palette.textPrimary),
                 decoration: InputDecoration(
                   hintText: '例: アルファ',
-                  hintStyle: TextStyle(color: AppColors.textTertiary),
+                  hintStyle: TextStyle(color: context.palette.textTertiary),
                   filled: true,
-                  fillColor: AppColors.backgroundWhite,
+                  fillColor: context.palette.backgroundWhite,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: context.palette.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: context.palette.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -220,7 +224,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: context.palette.textPrimary,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -228,7 +232,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                       '${_taskControllers.length} / 10',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textTertiary,
+                        color: context.palette.textTertiary,
                       ),
                     ),
                   ],
@@ -248,7 +252,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                         ),
                       ),
                     ),
@@ -260,7 +264,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -274,7 +278,7 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary,
+                            color: context.palette.textSecondary,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -294,19 +298,25 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                         flex: 3,
                         child: TextFormField(
                           controller: _taskControllers[index],
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: context.palette.textPrimary),
                           decoration: InputDecoration(
                             hintText: 'タスク ${index + 1}',
-                            hintStyle: TextStyle(color: AppColors.textTertiary),
+                            hintStyle: TextStyle(
+                              color: context.palette.textTertiary,
+                            ),
                             filled: true,
-                            fillColor: AppColors.backgroundWhite,
+                            fillColor: context.palette.backgroundWhite,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: AppColors.border),
+                              borderSide: BorderSide(
+                                color: context.palette.border,
+                              ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: AppColors.border),
+                              borderSide: BorderSide(
+                                color: context.palette.border,
+                              ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -327,20 +337,26 @@ class _MissionEditScreenState extends ConsumerState<MissionEditScreen> {
                         width: 80,
                         child: TextFormField(
                           controller: _expControllers[index],
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: context.palette.textPrimary),
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             hintText: 'EXP',
-                            hintStyle: TextStyle(color: AppColors.textTertiary),
+                            hintStyle: TextStyle(
+                              color: context.palette.textTertiary,
+                            ),
                             filled: true,
-                            fillColor: AppColors.backgroundWhite,
+                            fillColor: context.palette.backgroundWhite,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: AppColors.border),
+                              borderSide: BorderSide(
+                                color: context.palette.border,
+                              ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: AppColors.border),
+                              borderSide: BorderSide(
+                                color: context.palette.border,
+                              ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),

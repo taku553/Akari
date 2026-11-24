@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../mission/providers/mission_provider.dart';
 import '../providers/user_stats_provider.dart';
 import '../widgets/exp_progress_widget.dart';
@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
     final missionsAsync = ref.watch(missionListProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       body: SafeArea(
         bottom: false,
         child: userStatsAsync.when(
@@ -43,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
                   // ヘッダー部分（レベルと経験値）
                   SliverToBoxAdapter(
                     child: Container(
-                      color: AppColors.backgroundWhite,
+                      color: context.palette.backgroundWhite,
                       padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +52,10 @@ class HomeScreen extends ConsumerWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 18, bottom: 8),
+                              padding: const EdgeInsets.only(
+                                left: 18,
+                                bottom: 8,
+                              ),
                               child: SvgPicture.asset(
                                 'assets/images/akari_mark.svg',
                                 height: 36,
@@ -69,16 +72,16 @@ class HomeScreen extends ConsumerWidget {
                                 TextButton.icon(
                                   onPressed: () =>
                                       context.push('/mission/history'),
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.history,
                                     size: 16,
-                                    color: AppColors.textTertiary,
+                                    color: context.palette.textTertiary,
                                   ),
-                                  label: const Text(
+                                  label: Text(
                                     '履歴',
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: AppColors.textTertiary,
+                                      color: context.palette.textTertiary,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -104,16 +107,19 @@ class HomeScreen extends ConsumerWidget {
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w600,
                                                 letterSpacing: 1.5,
-                                                color: AppColors.textSecondary,
+                                                color: context
+                                                    .palette
+                                                    .textSecondary,
                                               ),
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
                                               activeMission.title,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w700,
-                                                color: AppColors.textPrimary,
+                                                color:
+                                                    context.palette.textPrimary,
                                               ),
                                               textAlign: TextAlign.center,
                                               maxLines: 1,
@@ -130,7 +136,9 @@ class HomeScreen extends ConsumerWidget {
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.w600,
                                                 letterSpacing: 1.5,
-                                                color: AppColors.textSecondary,
+                                                color: context
+                                                    .palette
+                                                    .textSecondary,
                                               ),
                                             ),
                                             const SizedBox(height: 4),
@@ -182,14 +190,14 @@ class HomeScreen extends ConsumerWidget {
                   // タスクセクションヘッダー
                   SliverToBoxAdapter(
                     child: Container(
-                      color: AppColors.backgroundSection,
+                      color: context.palette.backgroundSection,
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.check_circle_outline,
                             size: 14,
-                            color: AppColors.textTertiary,
+                            color: context.palette.textTertiary,
                           ),
                           const SizedBox(width: 6),
                           Text(
@@ -198,7 +206,7 @@ class HomeScreen extends ConsumerWidget {
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.5,
-                              color: AppColors.textTertiary,
+                              color: context.palette.textTertiary,
                             ),
                           ),
                         ],

@@ -288,10 +288,7 @@ class _LevelUpOverlayState extends ConsumerState<LevelUpOverlay>
         letterSpacing: 2,
         shadows: [
           Shadow(color: Colors.white.withValues(alpha: 0.8), blurRadius: 30),
-          Shadow(
-            color: context.accent.withValues(alpha: 0.6),
-            blurRadius: 60,
-          ),
+          Shadow(color: context.accent.withValues(alpha: 0.6), blurRadius: 60),
         ],
       ),
     );

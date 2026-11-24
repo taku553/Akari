@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/theme/accent_color.dart';
 import '../../../core/animations/progress_animation_controller.dart';
 import '../../../core/animations/level_up_state_provider.dart';
@@ -186,7 +187,7 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                     size: const Size(260, 260),
                     painter: _CircularProgressPainter(
                       progress: animatedProgress,
-                      backgroundColor: AppColors.borderLight,
+                      backgroundColor: context.palette.borderLight,
                       progressColor: context.accent,
                       strokeWidth: 18,
                     ),
@@ -201,18 +202,18 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 3,
-                          color: AppColors.textSecondary,
+                          color: context.palette.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         '$displayLevel',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 50,
                           fontWeight: FontWeight.w700,
                           height: 1.0,
-                          color: AppColors.textPrimary,
+                          color: context.palette.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -220,7 +221,7 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                         '${(progress * 100).toInt()}%',
                         style: TextStyle(
                           fontSize: 15,
-                          color: AppColors.textTertiary,
+                          color: context.palette.textTertiary,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -238,14 +239,17 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.backgroundWhite,
-                            AppColors.backgroundLight,
+                            context.palette.backgroundWhite,
+                            context.palette.backgroundLight,
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.border, width: 1),
+                        border: Border.all(
+                          color: context.palette.border,
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.shadowMedium,
@@ -269,14 +273,14 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                             ' / ',
                             style: TextStyle(
                               fontSize: 13,
-                              color: AppColors.borderDark,
+                              color: context.palette.borderDark,
                             ),
                           ),
                           Text(
                             '${widget.nextLevelExp}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: AppColors.textTertiary,
+                              color: context.palette.textTertiary,
                             ),
                           ),
                           const SizedBox(width: 3),
@@ -286,7 +290,7 @@ class _ExpProgressWidgetState extends ConsumerState<ExpProgressWidget>
                               fontSize: 8,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1,
-                              color: AppColors.textTertiary,
+                              color: context.palette.textTertiary,
                             ),
                           ),
                         ],
@@ -351,6 +355,7 @@ class _CircularProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(_CircularProgressPainter oldDelegate) {
     return oldDelegate.progress != progress ||
+        oldDelegate.backgroundColor != backgroundColor ||
         oldDelegate.progressColor != progressColor;
   }
 }

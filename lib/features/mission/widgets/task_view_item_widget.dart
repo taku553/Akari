@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../domain/task.dart';
 
 /// ミッション画面用のタスクアイテム（読み取り専用、完了操作不可）
@@ -26,14 +26,12 @@ class TaskViewItemWidget extends StatelessWidget {
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                color: task.isCompleted
-                    ? context.accent
-                    : Colors.transparent,
+                color: task.isCompleted ? context.accent : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: task.isCompleted
                       ? context.accent
-                      : AppColors.borderDark,
+                      : context.palette.borderDark,
                   width: 2,
                 ),
               ),
@@ -49,8 +47,8 @@ class TaskViewItemWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   color: task.isCompleted
-                      ? AppColors.textTertiary
-                      : AppColors.textPrimary,
+                      ? context.palette.textTertiary
+                      : context.palette.textPrimary,
                   decoration: task.isCompleted
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,

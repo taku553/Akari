@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 
 /// 特定商取引法に関する表記の各項目
@@ -44,21 +44,21 @@ class LegalNoticeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           '特定商取引法に関する表記',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -69,39 +69,39 @@ class LegalNoticeScreen extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(height: 16),
           itemBuilder: (context, index) {
             final item = _legalNoticeItems[index];
-            return _buildItem(item);
+            return _buildItem(context, item);
           },
         ),
       ),
     );
   }
 
-  Widget _buildItem(_LegalNoticeItem item) {
+  Widget _buildItem(BuildContext context, _LegalNoticeItem item) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 1),
+        border: Border.all(color: context.palette.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             item.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
+              color: context.palette.textSecondary,
             ),
           ),
           const SizedBox(height: 6),
           Text(
             item.value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
-              color: AppColors.textPrimary,
+              color: context.palette.textPrimary,
               height: 1.5,
             ),
           ),

@@ -23,6 +23,7 @@ import 'features/home/data/user_stats_repository.dart';
 import 'features/settings/providers/user_settings_provider.dart';
 import 'features/subscription/providers/subscription_provider.dart';
 import 'core/theme/accent_color.dart';
+import 'core/theme/theme_mode_provider.dart';
 
 void main() {
   // Flutterエンジンの初期化
@@ -44,6 +45,9 @@ Future<void> _initCore() async {
   Hive.registerAdapter(TaskImplAdapter()); // typeId: 0
   Hive.registerAdapter(MissionImplAdapter()); // typeId: 1
   Hive.registerAdapter(UserStatsImplAdapter()); // typeId: 2
+
+  // 端末ごとのアプリ設定（テーマなど）。起動直後から正しいテーマで描画するため先に開いておく
+  await Hive.openBox(appPreferencesBoxName);
 
   // 日付フォーマットの日本語化
   await initializeDateFormatting('ja_JP');
@@ -181,7 +185,7 @@ class MissionLevelerApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildAppTheme(brightness: ref.watch(brightnessProvider)),
       home: authState.when(
         data: (user) {
           if (user != null) {
@@ -197,7 +201,10 @@ class MissionLevelerApp extends ConsumerWidget {
           // guestExitToLoginProvider が true なら最初からログインフォームを表示
           final openLogin = ref.watch(guestExitToLoginProvider);
           final fromGuest = ref.watch(isFromGuestModeProvider);
-          return LoginScreen(initialIsLogin: openLogin, fromGuestMode: fromGuest);
+          return LoginScreen(
+            initialIsLogin: openLogin,
+            fromGuestMode: fromGuest,
+          );
         },
         loading: () =>
             _LoadingWithReload(message: '認証状態を確認しています...', onRetry: () {}),
@@ -267,7 +274,7 @@ class _GuestAppState extends ConsumerState<_GuestApp> {
     return MaterialApp.router(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildAppTheme(brightness: ref.watch(brightnessProvider)),
       routerConfig: _router,
     );
   }
@@ -359,7 +366,10 @@ class _AuthenticatedAppState extends ConsumerState<_AuthenticatedApp> {
     return MaterialApp.router(
       title: 'Mission Leveler',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(ref.watch(accentColorProvider)),
+      theme: buildAppTheme(
+        accent: ref.watch(accentColorProvider),
+        brightness: ref.watch(brightnessProvider),
+      ),
       routerConfig: _router,
     );
   }

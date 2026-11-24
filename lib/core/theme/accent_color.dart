@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
+import 'app_palette.dart';
 
 /// アクセントカラーが満たすべき、白との最小コントラスト比（WCAG 2.1 AA）
 const double minAccentContrastRatio = 4.5;
@@ -32,21 +33,43 @@ double contrastRatio(Color a, Color b) {
 bool meetsAccentContrast(Color color) =>
     contrastRatio(color, Colors.white) >= minAccentContrastRatio;
 
-/// アクセントカラーを薄く白に重ねた背景色。デフォルトの赤では AppColors.primaryBackground とほぼ一致する。
-Color accentBackgroundOf(Color accent) =>
-    Color.alphaBlend(accent.withValues(alpha: 0.09), Colors.white);
+/// アクセントカラーを薄く[base]に重ねた背景色。ライトのデフォルトの赤では AppColors.primaryBackground とほぼ一致する。
+Color accentBackgroundOf(
+  Color accent, {
+  Color base = Colors.white,
+  double alpha = 0.09,
+}) => Color.alphaBlend(accent.withValues(alpha: alpha), base);
 
 /// 画面から現在のアクセントカラーを取得するための拡張。
 /// MaterialApp のテーマ（colorScheme.primary）を参照するため、色が変わると自動で再描画される。
 extension AccentColorContext on BuildContext {
   Color get accent => Theme.of(this).colorScheme.primary;
-  Color get accentBackground => accentBackgroundOf(accent);
+  Color get accentBackground => accentBackgroundOf(
+    accent,
+    base: palette.backgroundWhite,
+    alpha: isDarkTheme ? 0.22 : 0.09,
+  );
 }
 
-/// アプリ共通のテーマ。アクセントカラーのみ差し替え可能。
-ThemeData buildAppTheme([Color accent = AppColors.primary]) {
+/// アプリ共通のテーマ。アクセントカラーとライト/ダークを切り替え可能。
+ThemeData buildAppTheme({
+  Color accent = AppColors.primary,
+  Brightness brightness = Brightness.light,
+}) {
+  final isDark = brightness == Brightness.dark;
+  final palette = isDark ? AppPalette.dark : AppPalette.light;
   return ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: accent, primary: accent),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: accent,
+      primary: accent,
+      onPrimary: Colors.white,
+      brightness: brightness,
+      surface: isDark ? palette.backgroundWhite : null,
+      onSurface: isDark ? palette.textPrimary : null,
+    ),
+    scaffoldBackgroundColor: isDark ? palette.backgroundLight : null,
+    dividerColor: isDark ? palette.border : null,
+    extensions: [palette],
     useMaterial3: true,
     fontFamily: 'NotoSansJP',
   );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../widgets/mission_view_card_widget.dart';
 import '../providers/mission_provider.dart';
@@ -29,7 +29,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               'いいえ',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: context.palette.textSecondary),
             ),
           ),
           TextButton(
@@ -96,15 +96,15 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
         title: Text(
           'MISSIONS',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
@@ -163,10 +163,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: context.accent,
-                            side: BorderSide(
-                              color: context.accent,
-                              width: 2,
-                            ),
+                            side: BorderSide(color: context.accent, width: 2),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -191,7 +188,7 @@ class _MissionsScreenState extends ConsumerState<MissionsScreen> {
           error: (error, stack) => Center(
             child: Text(
               'エラーが発生しました',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: context.palette.textSecondary),
             ),
           ),
         ),

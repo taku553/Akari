@@ -7,7 +7,7 @@ import '../../../core/animations/level_up_overlay.dart';
 import '../../../core/animations/level_up_state_provider.dart';
 import '../../../core/animations/mission_complete_overlay.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../home/providers/user_stats_provider.dart';
 import '../../home/providers/exp_progress_controller_provider.dart';
 import '../domain/task.dart';
@@ -273,7 +273,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                       border: Border.all(
                         color: widget.task.isCompleted
                             ? context.accent
-                            : AppColors.borderDark,
+                            : context.palette.borderDark,
                         width: 2,
                       ),
                     ),
@@ -290,8 +290,8 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: widget.task.isCompleted
-                            ? AppColors.textTertiary
-                            : AppColors.textPrimary,
+                            ? context.palette.textTertiary
+                            : context.palette.textPrimary,
                         decoration: widget.task.isCompleted
                             ? TextDecoration.lineThrough
                             : null,
@@ -305,7 +305,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget>
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: widget.task.isCompleted
-                          ? AppColors.borderDark
+                          ? context.palette.borderDark
                           : context.accent,
                     ),
                   ),

@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/auth/guest_mode_provider.dart';
-import '../../../core/theme/app_colors.dart';
+
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
 import '../../subscription/providers/subscription_provider.dart';
 import '../../../core/theme/accent_color.dart';
+import '../../../core/theme/app_palette.dart';
+import '../../../core/theme/theme_mode_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -15,15 +17,15 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
         title: Text(
           'SETTINGS',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
@@ -40,6 +42,7 @@ class SettingsScreen extends ConsumerWidget {
             _buildAccountBanner(context, ref),
             const SizedBox(height: 24),
             _buildSettingsSection(
+              context: context,
               title: 'アプリ情報',
               items: [
                 _SettingsItem(
@@ -50,23 +53,37 @@ class SettingsScreen extends ConsumerWidget {
                 _SettingsItem(
                   icon: Icons.palette_outlined,
                   title: 'カラーパレット',
-                  trailing: ref.watch(canUseColorPaletteProvider)
-                      ? const Icon(
-                          Icons.chevron_right,
-                          color: Color(0xFFA0AEC0),
-                        )
-                      : const Icon(
-                          Icons.lock_outline,
-                          color: Color(0xFFA0AEC0),
-                        ),
+                  trailing: Icon(
+                    ref.watch(canUseColorPaletteProvider)
+                        ? Icons.chevron_right
+                        : Icons.lock_outline,
+                    color: context.palette.textTertiary,
+                  ),
                   onTap: () => _onColorPaletteTap(context, ref),
+                ),
+                _SettingsItem(
+                  icon: context.isDarkTheme
+                      ? Icons.dark_mode_outlined
+                      : Icons.light_mode_outlined,
+                  title: 'ダークモード',
+                  trailing: Switch(
+                    value: ref.watch(themeModeProvider) == ThemeMode.dark,
+                    onChanged: (isDark) =>
+                        ref.read(themeModeProvider.notifier).setDark(isDark),
+                  ),
+                  onTap: () => ref
+                      .read(themeModeProvider.notifier)
+                      .setDark(ref.read(themeModeProvider) != ThemeMode.dark),
                 ),
                 _SettingsItem(
                   icon: Icons.info_outline,
                   title: 'バージョン',
-                  trailing: const Text(
+                  trailing: Text(
                     '1.0.0',
-                    style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: context.palette.textSecondary,
+                    ),
                   ),
                   onTap: null,
                 ),
@@ -74,30 +91,26 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
             _buildSettingsSection(
+              context: context,
               title: 'データ管理',
               items: [
                 _SettingsItem(
                   icon: Icons.delete_outline,
                   title: 'データを削除',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
+                  trailing: _chevron(context),
                   onTap: () => context.push('/settings/delete-data'),
                 ),
               ],
             ),
             const SizedBox(height: 24),
             _buildSettingsSection(
+              context: context,
               title: 'その他',
               items: [
                 _SettingsItem(
                   icon: Icons.help_outline,
                   title: 'ヘルプ',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
+                  trailing: _chevron(context),
                   onTap: () {
                     // TODO: Navigate to help screen
                   },
@@ -105,28 +118,19 @@ class SettingsScreen extends ConsumerWidget {
                 _SettingsItem(
                   icon: Icons.description_outlined,
                   title: '利用規約',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
+                  trailing: _chevron(context),
                   onTap: () => context.push('/settings/terms'),
                 ),
                 _SettingsItem(
                   icon: Icons.privacy_tip_outlined,
                   title: 'プライバシーポリシー',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
+                  trailing: _chevron(context),
                   onTap: () => context.push('/settings/privacy-policy'),
                 ),
                 _SettingsItem(
                   icon: Icons.gavel_outlined,
                   title: '特定商取引法に関する表記',
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFFA0AEC0),
-                  ),
+                  trailing: _chevron(context),
                   onTap: () => context.push('/settings/legal-notice'),
                 ),
               ],
@@ -138,6 +142,9 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _chevron(BuildContext context) =>
+      Icon(Icons.chevron_right, color: context.palette.textTertiary);
 
   /// カラーパレットの項目タップ時。利用できる場合のみ画面へ進み、それ以外は理由を案内する。
   Future<void> _onColorPaletteTap(BuildContext context, WidgetRef ref) async {
@@ -186,24 +193,19 @@ class SettingsScreen extends ConsumerWidget {
     if (isGuest) return const SizedBox.shrink();
 
     return _buildSettingsSection(
+      context: context,
       title: 'アカウント',
       items: [
         _SettingsItem(
           icon: Icons.lock_outline,
           title: 'パスワード変更',
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: Color(0xFFA0AEC0),
-          ),
+          trailing: _chevron(context),
           onTap: () => context.push('/settings/change-password'),
         ),
         _SettingsItem(
           icon: Icons.logout,
           title: 'ログアウト',
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: Color(0xFFA0AEC0),
-          ),
+          trailing: _chevron(context),
           onTap: () async {
             final confirmed = await showDialog<bool>(
               context: context,
@@ -233,10 +235,7 @@ class SettingsScreen extends ConsumerWidget {
         _SettingsItem(
           icon: Icons.delete_forever,
           title: 'アカウント削除',
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: Color(0xFFA0AEC0),
-          ),
+          trailing: _chevron(context),
           onTap: () => context.push('/settings/delete-account'),
         ),
       ],
@@ -348,9 +347,9 @@ class SettingsScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
+          color: context.palette.backgroundWhite,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border, width: 1),
+          border: Border.all(color: context.palette.border, width: 1),
         ),
         child: Row(
           children: [
@@ -373,24 +372,24 @@ class SettingsScreen extends ConsumerWidget {
                 children: [
                   Text(
                     user?.email ?? 'ユーザー',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: context.palette.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  const Text(
+                  Text(
                     'プロフィールを表示',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: context.palette.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.textTertiary),
+            _chevron(context),
           ],
         ),
       ),
@@ -403,6 +402,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildSettingsSection({
+    required BuildContext context,
     required String title,
     required List<_SettingsItem> items,
   }) {
@@ -417,15 +417,15 @@ class SettingsScreen extends ConsumerWidget {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              color: AppColors.textSecondary,
+              color: context.palette.textSecondary,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.backgroundWhite,
+            color: context.palette.backgroundWhite,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border, width: 1),
+            border: Border.all(color: context.palette.border, width: 1),
           ),
           child: Column(
             children: List.generate(
@@ -433,7 +433,11 @@ class SettingsScreen extends ConsumerWidget {
               (index) => Column(
                 children: [
                   if (index > 0)
-                    Divider(height: 1, color: AppColors.border, indent: 56),
+                    Divider(
+                      height: 1,
+                      color: context.palette.border,
+                      indent: 56,
+                    ),
                   items[index],
                 ],
               ),
@@ -467,7 +471,7 @@ class _SettingsItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
-            Icon(icon, size: 24, color: AppColors.textSecondary),
+            Icon(icon, size: 24, color: context.palette.textSecondary),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
@@ -475,7 +479,7 @@ class _SettingsItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary,
+                  color: context.palette.textPrimary,
                 ),
               ),
             ),

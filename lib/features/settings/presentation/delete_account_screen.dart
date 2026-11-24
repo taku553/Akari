@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/domain/user_stats.dart';
 import '../../mission/domain/mission.dart';
@@ -178,21 +179,21 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'アカウント削除',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -248,29 +249,29 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
             ),
             const SizedBox(height: 24),
             // パスワード入力
-            const Text(
+            Text(
               '確認のためパスワードを入力してください',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+                color: context.palette.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.backgroundWhite,
+                color: context.palette.backgroundWhite,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border, width: 1),
+                border: Border.all(color: context.palette.border, width: 1),
               ),
               child: TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: 'パスワード',
-                  hintStyle: const TextStyle(
+                  hintStyle: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textTertiary,
+                    color: context.palette.textTertiary,
                   ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
@@ -282,7 +283,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
                       _obscurePassword
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      color: AppColors.textTertiary,
+                      color: context.palette.textTertiary,
                     ),
                     onPressed: () =>
                         setState(() => _obscurePassword = !_obscurePassword),

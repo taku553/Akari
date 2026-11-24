@@ -5,6 +5,7 @@ import '../../../core/animations/level_up_state_provider.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/auth/guest_mode_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/data/user_stats_repository.dart';
 import '../../home/providers/user_stats_provider.dart';
@@ -41,7 +42,8 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
   }
 
   bool get _isGuest =>
-      ref.read(isGuestModeProvider) || ref.read(authServiceProvider).uid == null;
+      ref.read(isGuestModeProvider) ||
+      ref.read(authServiceProvider).uid == null;
 
   bool get _allSelected => _deleteLevel && _deleteExp && _deleteMissions;
 
@@ -49,10 +51,7 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
   bool get _isFullDelete => _mode == _DeleteMode.all || _allSelected;
 
   bool get _hasSelection =>
-      _mode == _DeleteMode.all ||
-      _deleteLevel ||
-      _deleteExp ||
-      _deleteMissions;
+      _mode == _DeleteMode.all || _deleteLevel || _deleteExp || _deleteMissions;
 
   bool get _canSubmit =>
       !_isLoading &&
@@ -126,9 +125,9 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
       ref.invalidate(missionHistoryProvider);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('データを削除しました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('データを削除しました')));
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
@@ -153,9 +152,9 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
 
   Widget _inputBox({required Widget child}) => Container(
     decoration: BoxDecoration(
-      color: AppColors.backgroundWhite,
+      color: context.palette.backgroundWhite,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: AppColors.border, width: 1),
+      border: Border.all(color: context.palette.border, width: 1),
     ),
     child: child,
   );
@@ -163,7 +162,7 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
   InputDecoration _inputDecoration(String hint, {Widget? suffixIcon}) =>
       InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(fontSize: 14, color: AppColors.textTertiary),
+        hintStyle: TextStyle(fontSize: 14, color: context.palette.textTertiary),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -176,10 +175,10 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
     padding: const EdgeInsets.only(bottom: 8),
     child: Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: AppColors.textPrimary,
+        color: context.palette.textPrimary,
       ),
     ),
   );
@@ -249,21 +248,21 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
   Widget build(BuildContext context) {
     final isGuest = _isGuest;
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'データを削除',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -314,7 +313,7 @@ class _DeleteDataScreenState extends ConsumerState<DeleteDataScreen> {
                         _obscurePassword
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: AppColors.textTertiary,
+                        color: context.palette.textTertiary,
                       ),
                       onPressed: () =>
                           setState(() => _obscurePassword = !_obscurePassword),

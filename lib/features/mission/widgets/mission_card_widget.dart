@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/animations/progress_animation_controller.dart';
 import '../domain/mission.dart';
 import 'task_item_widget.dart';
@@ -75,8 +75,8 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
-        border: Border.all(color: AppColors.border, width: 1),
+        color: context.palette.backgroundWhite,
+        border: Border.all(color: context.palette.border, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -93,7 +93,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: context.palette.textSecondary,
                     ),
                   ),
                 ),
@@ -112,7 +112,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                         children: [
                           CircularProgressIndicator(
                             value: animatedProgress,
-                            backgroundColor: AppColors.borderLight,
+                            backgroundColor: context.palette.borderLight,
                             valueColor: AlwaysStoppedAnimation<Color>(
                               context.accent,
                             ),
@@ -123,7 +123,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: context.palette.textPrimary,
                             ),
                           ),
                         ],
@@ -147,7 +147,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.5,
-                      color: AppColors.textTertiary,
+                      color: context.palette.textTertiary,
                     ),
                   ),
                 ),
@@ -157,7 +157,7 @@ class _MissionCardWidgetState extends ConsumerState<MissionCardWidget>
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.5,
-                    color: AppColors.textTertiary,
+                    color: context.palette.textTertiary,
                   ),
                 ),
               ],

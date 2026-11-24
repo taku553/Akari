@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/accent_color.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 
 /// ShellRoute 用のスキャフォールド
 /// ボトムナビゲーションバーを含み、子ウィジェットを表示する
@@ -48,8 +48,10 @@ class _BottomNavBar extends StatelessWidget {
     return IntrinsicHeight(
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
-          border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+          color: context.palette.backgroundWhite,
+          border: Border(
+            top: BorderSide(color: context.palette.border, width: 1),
+          ),
         ),
         child: SafeArea(
           child: Padding(
@@ -121,7 +123,7 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 24,
-              color: isActive ? context.accent : AppColors.textTertiary,
+              color: isActive ? context.accent : context.palette.textTertiary,
             ),
             const SizedBox(height: 4),
             Text(
@@ -130,7 +132,7 @@ class _NavItem extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
-                color: isActive ? context.accent : AppColors.textTertiary,
+                color: isActive ? context.accent : context.palette.textTertiary,
               ),
             ),
           ],

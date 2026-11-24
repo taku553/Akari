@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
 
@@ -17,22 +17,22 @@ class ProfileScreen extends ConsumerWidget {
     final userStats = ref.watch(userStatsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'PROFILE',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -64,6 +64,7 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 24),
         // アカウント情報セクション
         _buildInfoSection(
+          context,
           title: 'アカウント情報',
           items: [
             _ProfileInfoItem(
@@ -81,6 +82,7 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 24),
         // ステータスセクション
         _buildInfoSection(
+          context,
           title: 'ステータス',
           items: [
             _ProfileInfoItem(
@@ -130,9 +132,9 @@ class ProfileScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1),
+        border: Border.all(color: context.palette.border, width: 1),
       ),
       child: Column(
         children: [
@@ -156,14 +158,14 @@ class ProfileScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundWhite,
+                  color: context.palette.backgroundWhite,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.border, width: 1),
+                  border: Border.all(color: context.palette.border, width: 1),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.camera_alt_outlined,
                   size: 16,
-                  color: AppColors.textSecondary,
+                  color: context.palette.textSecondary,
                 ),
               ),
             ],
@@ -172,10 +174,10 @@ class ProfileScreen extends ConsumerWidget {
           // メールアドレス表示（将来的にはdisplayNameを表示）
           Text(
             user.email ?? 'ユーザー',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.palette.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -200,7 +202,8 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoSection({
+  Widget _buildInfoSection(
+    BuildContext context, {
     required String title,
     required List<_ProfileInfoItem> items,
   }) {
@@ -211,19 +214,19 @@ class ProfileScreen extends ConsumerWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
-              color: AppColors.textSecondary,
+              color: context.palette.textSecondary,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.backgroundWhite,
+            color: context.palette.backgroundWhite,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border, width: 1),
+            border: Border.all(color: context.palette.border, width: 1),
           ),
           child: Column(
             children: List.generate(
@@ -231,9 +234,9 @@ class ProfileScreen extends ConsumerWidget {
               (index) => Column(
                 children: [
                   if (index > 0)
-                    const Divider(
+                    Divider(
                       height: 1,
-                      color: AppColors.border,
+                      color: context.palette.border,
                       indent: 56,
                     ),
                   items[index],
@@ -274,7 +277,7 @@ class _ProfileInfoItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          Icon(icon, size: 24, color: AppColors.textSecondary),
+          Icon(icon, size: 24, color: context.palette.textSecondary),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -282,18 +285,18 @@ class _ProfileInfoItem extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: context.palette.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
+                    color: context.palette.textPrimary,
                   ),
                 ),
               ],

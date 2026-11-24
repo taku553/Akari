@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 
 /// ミッション作成成功画面
 /// デザインカンプのHTMLに基づいたアニメーション付き成功画面
@@ -91,7 +91,7 @@ class _MissionCreatedScreenState extends State<MissionCreatedScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white.withValues(alpha: 0.98),
+      backgroundColor: context.palette.backgroundWhite.withValues(alpha: 0.98),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -128,7 +128,7 @@ class _MissionCreatedScreenState extends State<MissionCreatedScreen>
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2,
-                    color: AppColors.textPrimary,
+                    color: context.palette.textPrimary,
                   ),
                 ),
               ),
@@ -139,7 +139,10 @@ class _MissionCreatedScreenState extends State<MissionCreatedScreen>
               opacity: _subtextOpacityAnimation,
               child: Text(
                 'ホーム画面に戻ります',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: context.palette.textSecondary,
+                ),
               ),
             ),
           ],

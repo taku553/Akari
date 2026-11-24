@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../domain/mission.dart';
 import '../providers/mission_provider.dart';
@@ -14,28 +15,28 @@ class MissionHistoryScreen extends ConsumerWidget {
     final history = ref.watch(missionHistoryProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundWhite,
+      backgroundColor: context.palette.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, size: 20),
-          color: AppColors.textPrimary,
+          color: context.palette.textPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           '完了済みミッション',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
           ),
         ),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColors.border),
+          child: Container(height: 1, color: context.palette.border),
         ),
       ),
       body: MaxWidthContainer(
@@ -57,23 +58,23 @@ class MissionHistoryScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.flag_outlined, size: 72, color: AppColors.textLight),
+          Icon(Icons.flag_outlined, size: 72, color: context.palette.textLight),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'まだ完了したミッションはありません',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
+              color: context.palette.textSecondary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'ミッションを完了すると\nここに記録されます',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.textTertiary,
+              color: context.palette.textTertiary,
               height: 1.6,
             ),
           ),
@@ -83,8 +84,8 @@ class MissionHistoryScreen extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back, size: 16),
             label: const Text('ホームに戻る'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.textSecondary,
-              side: const BorderSide(color: AppColors.border),
+              foregroundColor: context.palette.textSecondary,
+              side: BorderSide(color: context.palette.border),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -123,9 +124,9 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 1),
+        border: Border.all(color: context.palette.border, width: 1),
         boxShadow: [
           BoxShadow(
             color: AppColors.shadowLight,
@@ -165,26 +166,26 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
                     children: [
                       Text(
                         m.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: context.palette.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 4),
                       if (m.completedAt != null)
                         Text(
                           '完了日: ${_formatDate(m.completedAt!)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.textTertiary,
+                            color: context.palette.textTertiary,
                           ),
                         ),
                       Text(
                         '作成日: ${_formatDate(m.createdAt)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textTertiary,
+                          color: context.palette.textTertiary,
                         ),
                       ),
                     ],
@@ -197,7 +198,7 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
                     duration: const Duration(milliseconds: 200),
                     child: const Icon(Icons.keyboard_arrow_down, size: 22),
                   ),
-                  color: AppColors.textTertiary,
+                  color: context.palette.textTertiary,
                   onPressed: () => setState(() => _expanded = !_expanded),
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
@@ -217,11 +218,7 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.trending_up,
-                    size: 14,
-                    color: context.accent,
-                  ),
+                  Icon(Icons.trending_up, size: 14, color: context.accent),
                   const SizedBox(width: 6),
                   Text(
                     'Lv.$levelBefore',
@@ -274,21 +271,21 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
             ),
           // --- タスク一覧（展開時） ---
           if (_expanded) ...[
-            Container(height: 1, color: AppColors.borderLight),
+            Container(height: 1, color: context.palette.borderLight),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
                       'TASKS',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
-                        color: AppColors.textTertiary,
+                        color: context.palette.textTertiary,
                       ),
                     ),
                   ),
@@ -310,9 +307,9 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
                           Expanded(
                             child: Text(
                               task.title,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
-                                color: AppColors.textSecondary,
+                                color: context.palette.textSecondary,
                                 height: 1.4,
                               ),
                             ),
@@ -320,10 +317,10 @@ class _MissionHistoryCardState extends State<_MissionHistoryCard> {
                           const SizedBox(width: 8),
                           Text(
                             '+${task.exp} EXP',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textTertiary,
+                              color: context.palette.textTertiary,
                             ),
                           ),
                         ],

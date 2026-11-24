@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/utils/open_in_new_tab.dart';
 import '../../../core/widgets/max_width_container.dart';
 import 'legal_iframe.dart';
@@ -37,15 +37,15 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
         title: Text(
           widget.title,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          style: TextStyle(
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
@@ -54,16 +54,16 @@ class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
             ? [
                 IconButton(
                   tooltip: '新しいタブで開く',
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.open_in_new,
-                    color: AppColors.textPrimary,
+                    color: context.palette.textPrimary,
                   ),
                   onPressed: () => openRouteInNewTab(widget.fileName),
                 ),
               ]
             : null,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),

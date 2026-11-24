@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
@@ -96,21 +97,21 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: context.palette.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundWhite,
+        backgroundColor: context.palette.backgroundWhite,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'パスワード変更',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: context.palette.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w700,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: context.palette.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -215,9 +216,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
+        color: context.palette.backgroundWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border, width: 1),
+        border: Border.all(color: context.palette.border, width: 1),
       ),
       child: TextFormField(
         controller: controller,
@@ -225,9 +226,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         validator: validator,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(
+          labelStyle: TextStyle(
             fontSize: 14,
-            color: AppColors.textSecondary,
+            color: context.palette.textSecondary,
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
@@ -237,7 +238,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           suffixIcon: IconButton(
             icon: Icon(
               obscure ? Icons.visibility_off : Icons.visibility,
-              color: AppColors.textTertiary,
+              color: context.palette.textTertiary,
             ),
             onPressed: onToggle,
           ),

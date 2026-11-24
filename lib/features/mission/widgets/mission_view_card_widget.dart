@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/accent_color.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_palette.dart';
 import '../domain/mission.dart';
 import 'task_view_item_widget.dart';
 
@@ -24,8 +24,8 @@ class MissionViewCardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.backgroundWhite,
-        border: Border.all(color: AppColors.border, width: 1),
+        color: context.palette.backgroundWhite,
+        border: Border.all(color: context.palette.border, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -42,7 +42,7 @@ class MissionViewCardWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: context.palette.textSecondary,
                     ),
                   ),
                 ),
@@ -55,7 +55,7 @@ class MissionViewCardWidget extends StatelessWidget {
                     children: [
                       CircularProgressIndicator(
                         value: progress,
-                        backgroundColor: AppColors.borderLight,
+                        backgroundColor: context.palette.borderLight,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           context.accent,
                         ),
@@ -66,7 +66,7 @@ class MissionViewCardWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: context.palette.textPrimary,
                         ),
                       ),
                     ],

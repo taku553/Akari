@@ -4,13 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'auth_service.dart';
 import 'guest_mode_provider.dart';
+import '../theme/app_palette.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   /// true（デフォルト）: ログインフォーム表示、false: 新規登録フォーム表示
   final bool initialIsLogin;
+
   /// ゲストモードの設定画面から遷移してきた場合 true。戻るボタンを表示する。
   final bool fromGuestMode;
-  const LoginScreen({super.key, this.initialIsLogin = true, this.fromGuestMode = false});
+  const LoginScreen({
+    super.key,
+    this.initialIsLogin = true,
+    this.fromGuestMode = false,
+  });
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -98,15 +104,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: context.palette.backgroundLight,
       // ゲストモードから来た場合のみ戻るボタンを表示
       appBar: widget.fromGuestMode
           ? AppBar(
-              backgroundColor: const Color(0xFFF7F8FA),
+              backgroundColor: context.palette.backgroundLight,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new,
-                    color: Color(0xFF4A5568)),
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: context.palette.textSecondary,
+                ),
                 tooltip: 'ゲストモードに戻る',
                 onPressed: () {
                   // ゲストモードへ戻る・フラグをリセット
@@ -139,9 +147,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Text(
                     _isLogin ? 'ログイン' : '新規登録',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
-                      color: Color(0xFF718096),
+                      color: context.palette.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -177,7 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: context.palette.backgroundWhite,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -214,7 +222,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: context.palette.backgroundWhite,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -273,8 +281,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                     child: Text(
                       _isLogin ? 'アカウントをお持ちでない方はこちら' : '既にアカウントをお持ちの方はこちら',
-                      style: const TextStyle(
-                        color: Color(0xFF718096),
+                      style: TextStyle(
+                        color: context.palette.textSecondary,
                         fontSize: 13,
                       ),
                     ),
@@ -283,19 +291,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   // ─── ゲストモード ───────────────────────────
                   const SizedBox(height: 16),
                   Row(
-                    children: const [
-                      Expanded(child: Divider()),
+                    children: [
+                      const Expanded(child: Divider()),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           'または',
                           style: TextStyle(
-                            color: Color(0xFFA0AEC0),
+                            color: context.palette.textTertiary,
                             fontSize: 12,
                           ),
                         ),
                       ),
-                      Expanded(child: Divider()),
+                      const Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -323,21 +331,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onPressed: _isLoading
                           ? null
                           : () {
-                              ref
-                                  .read(isGuestModeProvider.notifier)
-                                  .state = true;
+                              ref.read(isGuestModeProvider.notifier).state =
+                                  true;
                             },
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFCBD5E0)),
+                        side: BorderSide(color: context.palette.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'まずは試してみる（ログイン不要）',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF4A5568),
+                          color: context.palette.textSecondary,
                         ),
                       ),
                     ),
