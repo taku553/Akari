@@ -183,7 +183,7 @@ class MissionLevelerApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
-      title: 'Mission Leveler',
+      title: 'Akari',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(brightness: ref.watch(brightnessProvider)),
       home: authState.when(
@@ -272,7 +272,7 @@ class _GuestAppState extends ConsumerState<_GuestApp> {
     }
 
     return MaterialApp.router(
-      title: 'Mission Leveler',
+      title: 'Akari',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(brightness: ref.watch(brightnessProvider)),
       routerConfig: _router,
@@ -364,7 +364,7 @@ class _AuthenticatedAppState extends ConsumerState<_AuthenticatedApp> {
     }
 
     return MaterialApp.router(
-      title: 'Mission Leveler',
+      title: 'Akari',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(
         accent: ref.watch(accentColorProvider),
