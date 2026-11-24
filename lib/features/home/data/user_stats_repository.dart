@@ -93,7 +93,10 @@ class UserStatsRepository {
       }
       // Firestoreが空 → ローカルデータをマイグレーション
       final localStats = _box?.get(_statsKey) ?? const UserStats();
-      await _statsDoc!.set(localStats.toJson());
+      await _statsDoc!.set(
+        localStats.toJson(),
+        SetOptions(merge: true), // settings フィールドを消さないため merge にする
+      );
       debugPrint(
         '☁️ UserStatsRepository: Migrated local data to Firestore. level=${localStats.level}',
       );
@@ -222,7 +225,7 @@ class UserStatsRepository {
   Future<void> saveStats(UserStats stats) async {
     await _box?.put(_statsKey, stats);
     try {
-      await _statsDoc?.set(stats.toJson());
+      await _statsDoc?.set(stats.toJson(), SetOptions(merge: true));
       debugPrint(
         '☁️ UserStatsRepository: Saved to Firestore. level=${stats.level}',
       );
