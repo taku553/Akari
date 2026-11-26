@@ -6,8 +6,9 @@ import '../../../core/auth/guest_mode_provider.dart';
 
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
+import '../../profile/providers/profile_image_provider.dart';
+import '../../profile/widgets/profile_avatar.dart';
 import '../../subscription/providers/subscription_provider.dart';
-import '../../../core/theme/accent_color.dart';
 import '../../../core/theme/app_palette.dart';
 import '../../../core/theme/theme_mode_provider.dart';
 
@@ -353,17 +354,11 @@ class SettingsScreen extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            CircleAvatar(
+            ProfileAvatar(
               radius: 24,
-              backgroundColor: context.accentBackground,
-              child: Text(
-                _getInitial(user?.email),
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: context.accent,
-                ),
-              ),
+              fontSize: 20,
+              initial: _getInitial(user?.email),
+              imageUrl: ref.watch(profileImageUrlProvider).value,
             ),
             const SizedBox(width: 16),
             Expanded(

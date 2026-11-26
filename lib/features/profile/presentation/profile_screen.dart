@@ -4,9 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/auth/auth_service.dart';
 import '../../../core/theme/accent_color.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/providers/user_stats_provider.dart';
+import '../providers/profile_image_provider.dart';
+import '../widgets/profile_avatar.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -138,38 +141,8 @@ class ProfileScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          // アイコン（将来的に画像設定可能にする）
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              CircleAvatar(
-                radius: 48,
-                backgroundColor: context.accentBackground,
-                child: Text(
-                  _getInitial(user.email),
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w700,
-                    color: context.accent,
-                  ),
-                ),
-              ),
-              // 将来のアイコン変更ボタン（Phase3で有効化）
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: context.palette.backgroundWhite,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: context.palette.border, width: 1),
-                ),
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  size: 16,
-                  color: context.palette.textSecondary,
-                ),
-              ),
-            ],
-          ),
+          // アイコン（タップでプロフィール画像を変更）
+          _EditableProfileAvatar(initial: _getInitial(user.email)),
           const SizedBox(height: 16),
           // メールアドレス表示（将来的にはdisplayNameを表示）
           Text(
@@ -257,6 +230,68 @@ class ProfileScreen extends ConsumerWidget {
   String _getInitial(String? email) {
     if (email == null || email.isEmpty) return '?';
     return email[0].toUpperCase();
+  }
+}
+
+/// プロフィール画面のアバター。タップで画像を選択してアップロードする。
+class _EditableProfileAvatar extends ConsumerWidget {
+  final String initial;
+
+  const _EditableProfileAvatar({required this.initial});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imageUrl = ref.watch(profileImageUrlProvider).value;
+    final uploadState = ref.watch(profileImageNotifierProvider);
+    final isUploading = uploadState.isLoading;
+
+    ref.listen(profileImageNotifierProvider, (_, next) {
+      if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('画像のアップロードに失敗しました'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    });
+
+    return GestureDetector(
+      onTap: isUploading
+          ? null
+          : () =>
+                ref.read(profileImageNotifierProvider.notifier).pickAndUpload(),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          ProfileAvatar(
+            radius: 48,
+            fontSize: 36,
+            initial: initial,
+            imageUrl: imageUrl,
+          ),
+          if (isUploading)
+            const SizedBox(
+              width: 96,
+              height: 96,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: context.palette.backgroundWhite,
+              shape: BoxShape.circle,
+              border: Border.all(color: context.palette.border, width: 1),
+            ),
+            child: Icon(
+              Icons.camera_alt_outlined,
+              size: 16,
+              color: context.palette.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

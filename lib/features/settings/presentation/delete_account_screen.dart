@@ -9,6 +9,7 @@ import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/max_width_container.dart';
 import '../../home/domain/user_stats.dart';
 import '../../mission/domain/mission.dart';
+import '../../profile/data/profile_image_repository.dart';
 
 class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -140,13 +141,16 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
       // ① 再認証
       await authService.reauthenticate(password);
 
-      // ② Firestoreデータ削除
+      // ② プロフィール画像（Storage）削除
+      await ProfileImageRepository().deleteAllProfileImages(uid);
+
+      // ③ Firestoreデータ削除
       await _deleteFirestoreData(uid);
 
-      // ③ ローカルデータ削除
+      // ④ ローカルデータ削除
       await _deleteLocalData(uid);
 
-      // ④ Firebase Authアカウント削除（最後に実行）
+      // ⑤ Firebase Authアカウント削除（最後に実行）
       await authService.deleteAccount();
 
       debugPrint('✅ DeleteAccount: Account deletion complete for uid=$uid');
